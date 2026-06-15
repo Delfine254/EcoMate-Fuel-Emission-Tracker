@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -75,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(),
 
                     suffixIcon: IconButton(
-
                       icon: Icon(
                         isPasswordHidden
                             ? Icons.visibility_off
@@ -132,6 +132,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextButton(
                       onPressed: () {
+
+                        Navigator.push(
+                          context,
+
+                          MaterialPageRoute(
+                            builder: (context) => RegisterScreen(),
+                          ),
+                        );
 
                       },
 
