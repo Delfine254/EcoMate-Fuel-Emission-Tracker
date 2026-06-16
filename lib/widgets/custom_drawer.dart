@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import '../screens/dashboard/dashboard_screen.dart';
+import '../screens/vehicles/vehicle_screen.dart';
+import '../screens/fuel/fuel_entry_screen.dart';
+import '../screens/analytics/analytics_screen.dart';
+import '../screens/emissions/emissions_screen.dart';
+import '../screens/predictions/predictions_screen.dart';
+import '../screens/recommendations/recommendations_screen.dart';
+import '../screens/reports/reports_screen.dart';
+import '../screens/auth/login_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -50,7 +59,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Dashboard'),
 
             onTap: () {
+Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => DashboardScreen(),
+    ),
+  );
             },
           ),
 
@@ -59,7 +74,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Vehicles'),
 
             onTap: () {
+ Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => VehicleScreen(),
+    ),
+  );
             },
           ),
 
@@ -68,7 +89,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Fuel Entry'),
 
             onTap: () {
+ Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => FuelEntryScreen(),
+    ),
+  );
             },
           ),
 
@@ -77,6 +104,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Analytics'),
 
             onTap: () {
+ Navigator.push(
+    context,
+
+    MaterialPageRoute(
+      builder: (context) => AnalyticsScreen(),
+    ),
+  );
 
             },
           ),
@@ -86,7 +120,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Emissions'),
 
             onTap: () {
+ Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => EmissionsScreen(),
+    ),
+  );
             },
           ),
 
@@ -95,6 +135,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Predictions'),
 
             onTap: () {
+  Navigator.push(
+    context,
+
+    MaterialPageRoute(
+      builder: (context) => PredictionsScreen(),
+    ),
+  );
 
             },
           ),
@@ -104,7 +151,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Recommendations'),
 
             onTap: () {
+ Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => RecommendationsScreen(),
+    ),
+  );
             },
           ),
 
@@ -113,7 +166,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Reports'),
 
             onTap: () {
+Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => ReportsScreen(),
+    ),
+  );
             },
           ),
 
@@ -124,7 +183,13 @@ class CustomDrawer extends StatelessWidget {
             title: Text('Logout'),
 
             onTap: () {
+Navigator.push(
+    context,
 
+    MaterialPageRoute(
+      builder: (context) => LoginScreen(),
+    ),
+  );
             },
           ),
 
