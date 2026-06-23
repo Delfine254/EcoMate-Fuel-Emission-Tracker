@@ -13,6 +13,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   TextEditingController efficiencyController =
       TextEditingController(text: '15');
 
+      TextEditingController vehicleNameController =
+    TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +32,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             children: [
 
               TextField(
+                controller: vehicleNameController,
                 decoration: InputDecoration(
                   labelText: 'Vehicle Name',
                   prefixIcon: Icon(Icons.directions_car),
@@ -105,7 +109,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
                 child: ElevatedButton(
                   onPressed: () {
+ Map<String, String> newVehicle = {
+    'name': vehicleNameController.text,
+    'fuel': selectedFuelType,
+    'efficiency': efficiencyController.text,
+  };
 
+  Navigator.pop(context, newVehicle);
                   },
 
                   style: ElevatedButton.styleFrom(

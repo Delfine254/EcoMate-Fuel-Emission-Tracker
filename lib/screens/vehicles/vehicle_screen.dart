@@ -56,15 +56,29 @@ class _VehicleScreenState extends State<VehicleScreen> {
               width: double.infinity,
 
               child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const AddVehicleScreen(),
-                    ),
-                  );
-                },
+                onPressed: () async {
+
+  final newVehicle = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) =>
+          const AddVehicleScreen(),
+    ),
+  );
+
+  if (newVehicle != null) {
+
+    setState(() {
+
+      vehicles.add(
+        Map<String, String>.from(newVehicle),
+      );
+
+    });
+
+  }
+
+},
 
                 icon: const Icon(Icons.add),
 
