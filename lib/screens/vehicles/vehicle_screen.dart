@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_drawer.dart';
+import 'add_vehicle_screen.dart';
 
-class VehicleScreen extends StatelessWidget {
+class VehicleScreen extends StatefulWidget {
   const VehicleScreen({super.key});
+
+  @override
+  State<VehicleScreen> createState() => _VehicleScreenState();
+}
+
+class _VehicleScreenState extends State<VehicleScreen> {
+
+  List<Map<String, String>> vehicles = [
+    {
+      'name': 'Toyota Axio',
+      'fuel': 'Petrol',
+      'efficiency': '15',
+    },
+    {
+      'name': 'Nissan Note',
+      'fuel': 'Petrol',
+      'efficiency': '18',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +57,13 @@ class VehicleScreen extends StatelessWidget {
 
               child: ElevatedButton.icon(
                 onPressed: () {
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const AddVehicleScreen(),
+                    ),
+                  );
                 },
 
                 icon: const Icon(Icons.add),
@@ -48,35 +74,29 @@ class VehicleScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Card(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.directions_car,
-                  color: Colors.blue,
-                ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: vehicles.length,
 
-                title: const Text('Toyota Axio'),
+                itemBuilder: (context, index) {
 
-                subtitle: const Text(
-                  'Petrol • 15 km/L',
-                ),
-              ),
-            ),
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.directions_car,
+                        color: Colors.blue,
+                      ),
 
-            const SizedBox(height: 10),
+                      title: Text(
+                        vehicles[index]['name']!,
+                      ),
 
-            Card(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.directions_car,
-                  color: Colors.green,
-                ),
-
-                title: const Text('Nissan Note'),
-
-                subtitle: const Text(
-                  'Petrol • 18 km/L',
-                ),
+                      subtitle: Text(
+                        '${vehicles[index]['fuel']} • ${vehicles[index]['efficiency']} km/L',
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
 
