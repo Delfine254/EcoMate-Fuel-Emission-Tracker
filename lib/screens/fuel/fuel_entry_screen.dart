@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'fuel_history_screen.dart';
 
-
 class FuelEntryScreen extends StatefulWidget {
   const FuelEntryScreen({super.key});
 
@@ -18,8 +17,9 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
       TextEditingController();
 
   String selectedVehicle = 'Toyota Axio';
+
   String currentDate =
-    DateTime.now().toString().split(' ')[0];
+      DateTime.now().toString().split(' ')[0];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
               DropdownButtonFormField<String>(
                 value: selectedVehicle,
 
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Vehicle',
                   prefixIcon: Icon(Icons.directions_car),
                   border: OutlineInputBorder(),
@@ -63,70 +63,107 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 },
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               TextField(
                 controller: fuelController,
                 keyboardType: TextInputType.number,
 
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Fuel Added (Litres)',
                   prefixIcon: Icon(Icons.local_gas_station),
                   border: OutlineInputBorder(),
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               TextField(
                 controller: odometerController,
                 keyboardType: TextInputType.number,
 
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Current Odometer (km)',
                   prefixIcon: Icon(Icons.speed),
                   border: OutlineInputBorder(),
                 ),
               ),
 
-Card(
-  child: ListTile(
-    leading: Icon(Icons.calendar_today),
+              const SizedBox(height: 20),
 
-    title: Text('Date'),
+              Card(
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.calendar_today,
+                  ),
 
-    subtitle: Text(currentDate),
-  ),
-),
+                  title: const Text(
+                    'Date',
+                  ),
 
-SizedBox(height: 20),
-              SizedBox(height: 30),
+                  subtitle: Text(
+                    currentDate,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
 
               SizedBox(
                 width: double.infinity,
 
                 child: ElevatedButton(
                   onPressed: () {
-Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) =>
-          const FuelHistoryScreen(),
-    ),
-  );
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Fuel entry saved successfully!',
+                        ),
+                      ),
+                    );
+
                   },
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                    ),
                   ),
 
                   child: const Text(
                     'Save Fuel Entry',
+
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              SizedBox(
+                width: double.infinity,
+
+                child: OutlinedButton(
+                  onPressed: () {
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const FuelHistoryScreen(),
+                      ),
+                    );
+
+                  },
+
+                  child:  Text(
+                    'View Fuel History',
                   ),
                 ),
               ),
