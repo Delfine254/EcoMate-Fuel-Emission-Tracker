@@ -5,9 +5,11 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/vehicles/vehicle_screen.dart';
 import "screens/emissions/emissions_screen.dart";
 import "screens/analytics/analytics_screen.dart";
+import "screens/predictions/predictions_screen.dart";
 
 void main() {
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ecomate',
-      home: const AnalyticsScreen(),
+      home: const PredictionsScreen(),
     );
   }
 }
