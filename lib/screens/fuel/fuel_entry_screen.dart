@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../database/database_helper.dart';
+import '../../models/fuel_log_model.dart';
 import 'fuel_history_screen.dart';
 
 class FuelEntryScreen extends StatefulWidget {
@@ -9,16 +12,15 @@ class FuelEntryScreen extends StatefulWidget {
 }
 
 class _FuelEntryScreenState extends State<FuelEntryScreen> {
-
-  TextEditingController fuelController =
+  final TextEditingController fuelController =
       TextEditingController();
 
-  TextEditingController odometerController =
+  final TextEditingController odometerController =
       TextEditingController();
 
   String selectedVehicle = 'Toyota Axio';
 
-  String currentDate =
+  final String currentDate =
       DateTime.now().toString().split(' ')[0];
 
   @override
@@ -30,7 +32,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
 
         child: SingleChildScrollView(
           child: Column(
@@ -46,20 +48,25 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 ),
 
                 items: const [
+
                   DropdownMenuItem(
                     value: 'Toyota Axio',
                     child: Text('Toyota Axio'),
                   ),
+
                   DropdownMenuItem(
                     value: 'Nissan Note',
                     child: Text('Nissan Note'),
                   ),
+
                 ],
 
                 onChanged: (value) {
+
                   setState(() {
                     selectedVehicle = value!;
                   });
+
                 },
               ),
 
@@ -113,16 +120,70 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 width: double.infinity,
 
                 child: ElevatedButton(
-                  onPressed: () {
 
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Fuel entry saved successfully!',
+                  onPressed: () async {
+
+                    if (fuelController.text.trim().isEmpty ||
+                        odometerController.text.trim().isEmpty) {
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please fill in all fields.',
+                          ),
                         ),
-                      ),
-                    );
+                      );
+
+                      return;
+                    }
+
+                    try {
+
+                      FuelLog fuelLog = FuelLog(
+                        vehicleName: selectedVehicle,
+                        litres: double.tryParse(
+                              fuelController.text,
+                            ) ??
+                            0,
+                        odometer: double.tryParse(
+                              odometerController.text,
+                            ) ??
+                            0,
+                        date: currentDate,
+                      );
+
+                      await DatabaseHelper.insertFuelLog(
+                        fuelLog,
+                      );
+
+                      fuelController.clear();
+                      odometerController.clear();
+
+                      if (!context.mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Fuel entry saved successfully!',
+                          ),
+                        ),
+                      );
+
+                    } catch (e) {
+
+                      if (!context.mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Error: $e',
+                          ),
+                        ),
+                      );
+
+                      debugPrint(e.toString());
+
+                    }
 
                   },
 
@@ -150,6 +211,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 width: double.infinity,
 
                 child: OutlinedButton(
+
                   onPressed: () {
 
                     Navigator.push(
@@ -162,7 +224,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
 
                   },
 
-                  child:  Text(
+                  child: const Text(
                     'View Fuel History',
                   ),
                 ),

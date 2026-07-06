@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/vehicle_model.dart';
+import '../models/fuel_log_model.dart';
 
 class DatabaseHelper {
   static Database? _database;
@@ -23,7 +24,8 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
+
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE vehicles(
@@ -33,11 +35,38 @@ class DatabaseHelper {
             efficiency REAL
           )
         ''');
+
+        await db.execute('''
+          CREATE TABLE fuel_logs(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vehicleName TEXT,
+            litres REAL,
+            odometer REAL,
+            date TEXT
+          )
+        ''');
+      },
+
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE fuel_logs(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              vehicleName TEXT,
+              litres REAL,
+              odometer REAL,
+              date TEXT
+            )
+          ''');
+        }
       },
     );
   }
 
-  // Insert a vehicle
+  // ==========================
+  // VEHICLES
+  // ==========================
+
   static Future<int> insertVehicle(Vehicle vehicle) async {
     final db = await database;
 
@@ -47,7 +76,6 @@ class DatabaseHelper {
     );
   }
 
-  // Get all vehicles
   static Future<List<Vehicle>> getVehicles() async {
     final db = await database;
 
@@ -57,6 +85,36 @@ class DatabaseHelper {
     return List.generate(
       maps.length,
       (index) => Vehicle.fromMap(maps[index]),
+    );
+  }
+
+  // ==========================
+  // FUEL LOGS
+  // ==========================
+
+  static Future<int> insertFuelLog(FuelLog fuelLog) async {
+    final db = await database;
+
+    return await db.insert(
+      'fuel_logs',
+      fuelLog.toMap(),
+    );
+  }
+
+  static Future<List<FuelLog>> getFuelLogs() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps =
+        await db.query(
+      'fuel_logs',
+      orderBy: 'id DESC',
+    );
+
+    return List.generate(
+      maps.length,
+      (index) => FuelLog.fromMap(
+        maps[index],
+      ),
     );
   }
 }
