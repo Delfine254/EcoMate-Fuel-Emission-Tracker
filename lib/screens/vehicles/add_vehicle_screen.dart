@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../database/database_helper.dart';
+import '../../models/vehicle_model.dart';
+
 class AddVehicleScreen extends StatefulWidget {
   const AddVehicleScreen({super.key});
 
   @override
-  State<AddVehicleScreen> createState() => _AddVehicleScreenState();
+  State<AddVehicleScreen> createState() =>
+      _AddVehicleScreenState();
 }
 
-class _AddVehicleScreenState extends State<AddVehicleScreen> {
+class _AddVehicleScreenState
+    extends State<AddVehicleScreen> {
+
   String selectedFuelType = 'Petrol';
+
+  TextEditingController vehicleNameController =
+      TextEditingController();
 
   TextEditingController efficiencyController =
       TextEditingController(text: '15');
-
-      TextEditingController vehicleNameController =
-    TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
 
         child: SingleChildScrollView(
           child: Column(
@@ -33,25 +39,29 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
               TextField(
                 controller: vehicleNameController,
-                decoration: InputDecoration(
+
+                decoration: const InputDecoration(
                   labelText: 'Vehicle Name',
-                  prefixIcon: Icon(Icons.directions_car),
+                  prefixIcon:
+                      Icon(Icons.directions_car),
                   border: OutlineInputBorder(),
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               DropdownButtonFormField<String>(
                 value: selectedFuelType,
 
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Fuel Type',
-                  prefixIcon: Icon(Icons.local_gas_station),
+                  prefixIcon:
+                      Icon(Icons.local_gas_station),
                   border: OutlineInputBorder(),
                 ),
 
                 items: const [
+
                   DropdownMenuItem(
                     value: 'Petrol',
                     child: Text('Petrol'),
@@ -74,7 +84,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 ],
 
                 onChanged: (value) {
+
                   setState(() {
+
                     selectedFuelType = value!;
 
                     if (value == 'Petrol') {
@@ -86,45 +98,96 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     } else {
                       efficiencyController.text = '0';
                     }
+
                   });
+
                 },
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               TextField(
                 controller: efficiencyController,
+                keyboardType:
+                    TextInputType.number,
 
-                decoration: InputDecoration(
-                  labelText: 'Fuel Efficiency (km/L)',
+                decoration: const InputDecoration(
+                  labelText:
+                      'Fuel Efficiency (km/L)',
                   prefixIcon: Icon(Icons.speed),
                   border: OutlineInputBorder(),
                 ),
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               SizedBox(
                 width: double.infinity,
 
                 child: ElevatedButton(
-                  onPressed: () {
- Map<String, String> newVehicle = {
-    'name': vehicleNameController.text,
-    'fuel': selectedFuelType,
-    'efficiency': efficiencyController.text,
-  };
 
-  Navigator.pop(context, newVehicle);
-                  },
+                  onPressed: () async {
 
+  if (vehicleNameController.text.trim().isEmpty) {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enter a vehicle name'),
+      ),
+    );
+
+    return;
+  }
+
+  try {
+
+    Vehicle vehicle = Vehicle(
+
+      name: vehicleNameController.text.trim(),
+
+      fuelType: selectedFuelType,
+
+      efficiency: double.tryParse(
+            efficiencyController.text,
+          ) ??
+          0,
+
+    );
+
+    await DatabaseHelper.insertVehicle(vehicle);
+
+    if (!context.mounted) return;
+
+    Navigator.pop(context, true);
+
+  } catch (e) {
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Error: $e',
+        ),
+      ),
+    );
+
+    debugPrint(e.toString());
+
+  }
+
+},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding:
+                        const EdgeInsets.symmetric(
+                      vertical: 15,
+                    ),
                   ),
 
                   child: const Text(
                     'Save Vehicle',
+
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,

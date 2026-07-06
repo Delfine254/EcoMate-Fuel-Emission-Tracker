@@ -8,8 +8,19 @@ import "screens/analytics/analytics_screen.dart";
 import "screens/predictions/predictions_screen.dart";
 import "screens/recommendations/recommendations_screen.dart";
 import "screens/reports/reports_screen.dart";
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:io';
 
 void main() {
+  if (Platform.isWindows ||
+      Platform.isLinux ||
+      Platform.isMacOS) {
+
+    sqfliteFfiInit();
+
+    databaseFactory = databaseFactoryFfi;
+
+  }
   runApp(const MyApp());
   
 }

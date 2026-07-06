@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../database/database_helper.dart';
+import '../../models/vehicle_model.dart';
 import '../../widgets/custom_drawer.dart';
 import 'add_vehicle_screen.dart';
 
@@ -11,21 +14,22 @@ class VehicleScreen extends StatefulWidget {
 
 class _VehicleScreenState extends State<VehicleScreen> {
 
-  List<Map<String, String>> vehicles = [
-    {
-      'name': 'Toyota Axio',
-      'fuel': 'Petrol',
-      'efficiency': '15',
-    },
-    {
-      'name': 'Nissan Note',
-      'fuel': 'Petrol',
-      'efficiency': '18',
-    },
-  ];
+  List<Vehicle> vehicles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadVehicles();
+  }
+
+  Future<void> loadVehicles() async {
+    vehicles = await DatabaseHelper.getVehicles();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Management'),
@@ -35,7 +39,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
       drawer: const CustomDrawer(),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,62 +60,74 @@ class _VehicleScreenState extends State<VehicleScreen> {
               width: double.infinity,
 
               child: ElevatedButton.icon(
+
                 onPressed: () async {
 
-  final newVehicle = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) =>
-          const AddVehicleScreen(),
-    ),
-  );
+                  bool? saved =
+                      await Navigator.push(
 
-  if (newVehicle != null) {
+                    context,
 
-    setState(() {
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const AddVehicleScreen(),
+                    ),
+                  );
 
-      vehicles.add(
-        Map<String, String>.from(newVehicle),
-      );
+                  if (saved == true) {
+                    loadVehicles();
+                  }
 
-    });
-
-  }
-
-},
+                },
 
                 icon: const Icon(Icons.add),
 
-                label: const Text('Add Vehicle'),
+                label: const Text(
+                  'Add Vehicle',
+                ),
               ),
             ),
 
             const SizedBox(height: 20),
 
             Expanded(
-              child: ListView.builder(
-                itemCount: vehicles.length,
 
-                itemBuilder: (context, index) {
+              child: vehicles.isEmpty
 
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.directions_car,
-                        color: Colors.blue,
+                  ? const Center(
+                      child: Text(
+                        'No vehicles added yet.',
                       ),
+                    )
 
-                      title: Text(
-                        vehicles[index]['name']!,
-                      ),
+                  : ListView.builder(
 
-                      subtitle: Text(
-                        '${vehicles[index]['fuel']} • ${vehicles[index]['efficiency']} km/L',
-                      ),
+                      itemCount: vehicles.length,
+
+                      itemBuilder: (context, index) {
+
+                        return Card(
+
+                          child: ListTile(
+
+                            leading: const Icon(
+                              Icons.directions_car,
+                              color: Colors.blue,
+                            ),
+
+                            title: Text(
+                              vehicles[index].name,
+                            ),
+
+                            subtitle: Text(
+                              '${vehicles[index].fuelType} • ${vehicles[index].efficiency} km/L',
+                            ),
+
+                          ),
+                        );
+
+                      },
                     ),
-                  );
-                },
-              ),
             ),
 
           ],
