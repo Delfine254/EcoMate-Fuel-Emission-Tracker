@@ -117,4 +117,14 @@ class DatabaseHelper {
       ),
     );
   }
+  static Future<void> deleteDatabaseFile() async {
+  String path = join(
+    await getDatabasesPath(),
+    'ecomate.db',
+  );
+
+  await deleteDatabase(path);
+
+  _database = null;
+}
 }

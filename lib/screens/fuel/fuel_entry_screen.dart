@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../database/database_helper.dart';
 import '../../models/fuel_log_model.dart';
+import '../../models/vehicle_model.dart';
 import 'fuel_history_screen.dart';
 
 class FuelEntryScreen extends StatefulWidget {
@@ -12,16 +13,33 @@ class FuelEntryScreen extends StatefulWidget {
 }
 
 class _FuelEntryScreenState extends State<FuelEntryScreen> {
-  final TextEditingController fuelController =
-      TextEditingController();
+  final TextEditingController fuelController = TextEditingController();
+  final TextEditingController odometerController = TextEditingController();
 
-  final TextEditingController odometerController =
-      TextEditingController();
+  List<Vehicle> vehicles = [];
 
-  String selectedVehicle = 'Toyota Axio';
+  String? selectedVehicle;
 
   final String currentDate =
       DateTime.now().toString().split(' ')[0];
+
+  @override
+  void initState() {
+    super.initState();
+    loadVehicles();
+  }
+
+  Future<void> loadVehicles() async {
+    final data = await DatabaseHelper.getVehicles();
+
+    setState(() {
+      vehicles = data;
+
+      if (vehicles.isNotEmpty) {
+        selectedVehicle = vehicles.first.name;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,37 +56,42 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
           child: Column(
             children: [
 
-              DropdownButtonFormField<String>(
-                value: selectedVehicle,
+              if (vehicles.isEmpty)
 
-                decoration: const InputDecoration(
-                  labelText: 'Vehicle',
-                  prefixIcon: Icon(Icons.directions_car),
-                  border: OutlineInputBorder(),
+                const Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'No vehicles found.\nPlease add a vehicle first.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+
+              else
+
+                DropdownButtonFormField<String>(
+                  value: selectedVehicle,
+
+                  decoration: const InputDecoration(
+                    labelText: 'Vehicle',
+                    prefixIcon: Icon(Icons.directions_car),
+                    border: OutlineInputBorder(),
+                  ),
+
+                  items: vehicles.map((vehicle) {
+                    return DropdownMenuItem<String>(
+                      value: vehicle.name,
+                      child: Text(vehicle.name),
+                    );
+                  }).toList(),
+
+                  onChanged: (value) {
+                    setState(() {
+                      selectedVehicle = value!;
+                    });
+                  },
                 ),
-
-                items: const [
-
-                  DropdownMenuItem(
-                    value: 'Toyota Axio',
-                    child: Text('Toyota Axio'),
-                  ),
-
-                  DropdownMenuItem(
-                    value: 'Nissan Note',
-                    child: Text('Nissan Note'),
-                  ),
-
-                ],
-
-                onChanged: (value) {
-
-                  setState(() {
-                    selectedVehicle = value!;
-                  });
-
-                },
-              ),
 
               const SizedBox(height: 20),
 
@@ -100,17 +123,9 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
 
               Card(
                 child: ListTile(
-                  leading: const Icon(
-                    Icons.calendar_today,
-                  ),
-
-                  title: const Text(
-                    'Date',
-                  ),
-
-                  subtitle: Text(
-                    currentDate,
-                  ),
+                  leading: const Icon(Icons.calendar_today),
+                  title: const Text('Date'),
+                  subtitle: Text(currentDate),
                 ),
               ),
 
@@ -122,6 +137,17 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 child: ElevatedButton(
 
                   onPressed: () async {
+
+                    if (vehicles.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please add a vehicle first.',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
 
                     if (fuelController.text.trim().isEmpty ||
                         odometerController.text.trim().isEmpty) {
@@ -140,7 +166,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                     try {
 
                       FuelLog fuelLog = FuelLog(
-                        vehicleName: selectedVehicle,
+                        vehicleName: selectedVehicle!,
                         litres: double.tryParse(
                               fuelController.text,
                             ) ??
@@ -175,13 +201,9 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            'Error: $e',
-                          ),
+                          content: Text('Error: $e'),
                         ),
                       );
-
-                      debugPrint(e.toString());
 
                     }
 
@@ -196,7 +218,6 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
 
                   child: const Text(
                     'Save Fuel Entry',
-
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -211,17 +232,14 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                 width: double.infinity,
 
                 child: OutlinedButton(
-
                   onPressed: () {
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
+                        builder: (_) =>
                             const FuelHistoryScreen(),
                       ),
                     );
-
                   },
 
                   child: const Text(

@@ -1,7 +1,41 @@
 import 'package:flutter/material.dart';
 
-class FuelHistoryScreen extends StatelessWidget {
+import '../../database/database_helper.dart';
+import '../../models/fuel_log_model.dart';
+
+class FuelHistoryScreen extends StatefulWidget {
   const FuelHistoryScreen({super.key});
+
+  @override
+  State<FuelHistoryScreen> createState() =>
+      _FuelHistoryScreenState();
+}
+
+class _FuelHistoryScreenState
+    extends State<FuelHistoryScreen> {
+
+  List<FuelLog> fuelLogs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadFuelLogs();
+  }
+
+  Future<void> loadFuelLogs() async {
+
+    final logs =
+        await DatabaseHelper.getFuelLogs();
+
+    setState(() {
+      fuelLogs = logs;
+    });
+
+  }
+
+  double calculateEmission(double litres) {
+    return litres * 2.31;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,44 +46,58 @@ class FuelHistoryScreen extends StatelessWidget {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
 
-        child: ListView(
-          children: const [
+        child: fuelLogs.isEmpty
 
-            Card(
-              child: ListTile(
-                leading: Icon(
-                  Icons.local_gas_station,
-                  color: Colors.blue,
+            ? const Center(
+                child: Text(
+                  'No fuel records found.',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
+              )
 
-                title: Text('Toyota Axio'),
+            : ListView.builder(
 
-            subtitle: Text(
-  '20 L • 52,000 km\n2026-06-24\n\nEstimated CO₂: 46.2 kg',
-),
+                itemCount: fuelLogs.length,
+
+                itemBuilder: (context, index) {
+
+                  final log = fuelLogs[index];
+
+                  return Card(
+
+                    margin:
+                        const EdgeInsets.only(
+                      bottom: 12,
+                    ),
+
+                    child: ListTile(
+
+                      leading: const Icon(
+                        Icons.local_gas_station,
+                        color: Colors.blue,
+                      ),
+
+                      title: Text(
+                        log.vehicleName,
+                      ),
+
+                      subtitle: Text(
+                        '${log.litres} L • '
+                        '${log.odometer} km\n'
+                        '${log.date}\n\n'
+                        'Estimated CO₂: '
+                        '${calculateEmission(log.litres).toStringAsFixed(1)} kg',
+                      ),
+
+                    ),
+                  );
+
+                },
               ),
-            ),
-
-            SizedBox(height: 10),
-
-            Card(
-              child: ListTile(
-                leading: Icon(
-                  Icons.local_gas_station,
-                  color: Colors.green,
-                ),
-
-                title: Text('Nissan Note'),
-
-                subtitle: Text(
-  '15 L • 48,500 km\n2026-06-23\n\nEstimated CO₂: 34.7 kg',
-),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

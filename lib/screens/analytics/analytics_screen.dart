@@ -11,19 +11,15 @@ class AnalyticsScreen extends StatelessWidget {
         title: const Text('Analytics'),
         backgroundColor: Colors.blue,
       ),
-
       drawer: const CustomDrawer(),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
 
             const Text(
-              'Analytics Overview',
+              'Fuel Consumption Analytics',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -35,8 +31,8 @@ class AnalyticsScreen extends StatelessWidget {
             _buildCard(
               Icons.local_gas_station,
               Colors.blue,
-              'Total Fuel Used',
-              '55 Litres',
+              'Total Fuel Logged',
+              '72 Litres',
             ),
 
             const SizedBox(height: 15),
@@ -44,8 +40,8 @@ class AnalyticsScreen extends StatelessWidget {
             _buildCard(
               Icons.eco,
               Colors.green,
-              'Total Emissions',
-              '127 kg CO₂',
+              'Total CO₂ Emissions',
+              '166.3 kg',
             ),
 
             const SizedBox(height: 15),
@@ -54,7 +50,7 @@ class AnalyticsScreen extends StatelessWidget {
               Icons.directions_car,
               Colors.orange,
               'Registered Vehicles',
-              '2',
+              '2 Vehicles',
             ),
 
             const SizedBox(height: 15),
@@ -62,8 +58,17 @@ class AnalyticsScreen extends StatelessWidget {
             _buildCard(
               Icons.speed,
               Colors.purple,
-              'Average Efficiency',
-              '16.5 km/L',
+              'Average Fuel Efficiency',
+              '18.0 km/L',
+            ),
+
+            const SizedBox(height: 15),
+
+            _buildCard(
+              Icons.attach_money,
+              Colors.teal,
+              'Estimated Monthly Fuel Cost',
+              'KES 12,240',
             ),
 
             const SizedBox(height: 30),
@@ -84,17 +89,21 @@ class AnalyticsScreen extends StatelessWidget {
                   Icons.check_circle,
                   color: Colors.green,
                 ),
-                title: Text('Fuel usage is stable'),
+                title: Text(
+                  'Fuel consumption remained stable across recent logs.',
+                ),
               ),
             ),
 
             Card(
               child: ListTile(
                 leading: Icon(
-                  Icons.directions_car,
+                  Icons.speed,
                   color: Colors.blue,
                 ),
-                title: Text('Toyota Axio is currently the most fuel-efficient'),
+                title: Text(
+                  'Average fuel efficiency indicates economical driving habits.',
+                ),
               ),
             ),
 
@@ -104,7 +113,9 @@ class AnalyticsScreen extends StatelessWidget {
                   Icons.eco,
                   color: Colors.green,
                 ),
-                title: Text('Overall environmental status: Efficient'),
+                title: Text(
+                  'Estimated carbon emissions remain within acceptable limits.',
+                ),
               ),
             ),
           ],
@@ -114,14 +125,13 @@ class AnalyticsScreen extends StatelessWidget {
   }
 
   Widget _buildCard(
-      IconData icon,
-      Color color,
-      String title,
-      String value,
-      ) {
+    IconData icon,
+    Color color,
+    String title,
+    String value,
+  ) {
     return Card(
       elevation: 3,
-
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color,
@@ -130,9 +140,7 @@ class AnalyticsScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-
         title: Text(title),
-
         subtitle: Text(
           value,
           style: const TextStyle(
