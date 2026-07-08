@@ -23,7 +23,7 @@ class ReportsScreen extends StatelessWidget {
           children: [
 
             const Text(
-              'EcoMate Vehicle Report',
+              'EcoMate Summary Report',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -33,18 +33,9 @@ class ReportsScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             _buildReportCard(
-              Icons.directions_car,
-              Colors.blue,
-              'Vehicle',
-              'Toyota Axio',
-            ),
-
-            const SizedBox(height: 15),
-
-            _buildReportCard(
               Icons.local_gas_station,
               Colors.orange,
-              'Fuel Used',
+              'Total Fuel Consumed',
               '55 Litres',
             ),
 
@@ -53,8 +44,17 @@ class ReportsScreen extends StatelessWidget {
             _buildReportCard(
               Icons.eco,
               Colors.green,
-              'Total Emissions',
-              '127 kg CO₂',
+              'Total CO₂ Emissions',
+              '127 kg',
+            ),
+
+            const SizedBox(height: 15),
+
+            _buildReportCard(
+              Icons.directions_car,
+              Colors.blue,
+              'Registered Vehicles',
+              '3',
             ),
 
             const SizedBox(height: 15),
@@ -62,7 +62,7 @@ class ReportsScreen extends StatelessWidget {
             _buildReportCard(
               Icons.speed,
               Colors.purple,
-              'Average Efficiency',
+              'Average Fuel Efficiency',
               '16.5 km/L',
             ),
 
@@ -71,17 +71,17 @@ class ReportsScreen extends StatelessWidget {
             _buildReportCard(
               Icons.trending_up,
               Colors.red,
-              'Predicted Emissions',
-              '166 kg CO₂',
+              'Forecast CO₂ Emissions',
+              '173.3 kg',
             ),
 
             const SizedBox(height: 15),
 
             _buildReportCard(
-              Icons.verified,
+              Icons.calendar_today,
               Colors.teal,
-              'Driver Status',
-              'Efficient Driver',
+              'Report Date',
+              '08 July 2026',
             ),
 
             const SizedBox(height: 30),
@@ -103,7 +103,7 @@ class ReportsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(16),
 
                 child: Text(
-                  'Your vehicle is operating efficiently with moderate fuel consumption and controlled emissions. Continue regular servicing and maintain smooth driving habits to sustain good performance.',
+                  'This report summarizes your recorded fuel consumption, estimated carbon emissions, fuel efficiency and forecast trends. Continue monitoring fuel usage, servicing your vehicles regularly and following EcoMate recommendations to improve fuel economy and reduce environmental impact.',
                   style: TextStyle(
                     fontSize: 16,
                     height: 1.5,
