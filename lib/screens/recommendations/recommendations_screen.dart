@@ -23,20 +23,30 @@ class RecommendationsScreen extends StatelessWidget {
           children: [
 
             const Text(
-              'Recommendations',
+              'Smart Recommendations',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+
+            const Text(
+              'EcoMate recommends the following actions to improve fuel efficiency and reduce carbon emissions.',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 15,
+              ),
+            ),
+
+            const SizedBox(height: 25),
 
             _buildRecommendation(
-              Icons.eco,
-              Colors.green,
-              'Drive at a steady speed',
-              'Smooth acceleration and braking improve fuel efficiency.',
+              Icons.speed,
+              Colors.blue,
+              'Maintain a steady driving speed',
+              'Avoid sudden acceleration and harsh braking to improve fuel efficiency.',
             ),
 
             const SizedBox(height: 15),
@@ -44,41 +54,41 @@ class RecommendationsScreen extends StatelessWidget {
             _buildRecommendation(
               Icons.tire_repair,
               Colors.orange,
-              'Maintain tyre pressure',
-              'Correct tyre pressure reduces fuel consumption.',
+              'Maintain correct tyre pressure',
+              'Properly inflated tyres reduce rolling resistance and improve fuel economy.',
             ),
 
             const SizedBox(height: 15),
 
             _buildRecommendation(
-              Icons.timer_off,
-              Colors.red,
-              'Reduce unnecessary idling',
-              'Turn off the engine when parked for long periods.',
+              Icons.engineering,
+              Colors.purple,
+              'Schedule regular vehicle servicing',
+              'Routine maintenance keeps the engine operating efficiently and reduces emissions.',
             ),
 
             const SizedBox(height: 15),
 
             _buildRecommendation(
               Icons.route,
-              Colors.blue,
-              'Combine short trips',
-              'Planning errands together saves fuel and reduces emissions.',
+              Colors.teal,
+              'Plan efficient travel routes',
+              'Combining trips and avoiding traffic congestion helps lower fuel consumption.',
             ),
 
             const SizedBox(height: 15),
 
             _buildRecommendation(
-              Icons.build,
-              Colors.purple,
-              'Service your vehicle regularly',
-              'Routine maintenance keeps your engine running efficiently.',
+              Icons.eco,
+              Colors.green,
+              'Monitor fuel consumption regularly',
+              'Review your fuel records frequently to identify unusual increases in fuel usage.',
             ),
 
             const SizedBox(height: 30),
 
             const Text(
-              'Overall Recommendation',
+              'Overall Assessment',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -95,15 +105,15 @@ class RecommendationsScreen extends StatelessWidget {
                 leading: Icon(
                   Icons.verified,
                   color: Colors.green,
-                  size: 35,
+                  size: 36,
                 ),
 
                 title: Text(
-                  'Efficient Driver',
+                  'Good Fuel Management',
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
                     color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
 
@@ -111,10 +121,7 @@ class RecommendationsScreen extends StatelessWidget {
                   padding: EdgeInsets.only(top: 8),
 
                   child: Text(
-                    'Your driving habits are fuel-efficient. Continue maintaining your vehicle regularly and monitor your fuel usage to keep emissions low.',
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
+                    'Your recent fuel records indicate efficient vehicle usage. Continue following EcoMate recommendations to maintain good fuel economy and minimize environmental impact.',
                   ),
                 ),
               ),
