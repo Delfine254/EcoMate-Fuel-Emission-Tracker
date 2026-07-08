@@ -11,19 +11,15 @@ class PredictionsScreen extends StatelessWidget {
         title: const Text('Predictions'),
         backgroundColor: Colors.blue,
       ),
-
       drawer: const CustomDrawer(),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
 
             const Text(
-              'Fuel Consumption Forecast',
+              'Fuel Consumption Predictions',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -35,8 +31,8 @@ class PredictionsScreen extends StatelessWidget {
             _buildPredictionCard(
               Icons.local_gas_station,
               Colors.blue,
-              'Expected Fuel Usage',
-              '72 Litres',
+              'Expected Fuel Consumption',
+              '75 Litres',
             ),
 
             const SizedBox(height: 15),
@@ -45,7 +41,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.eco,
               Colors.green,
               'Expected CO₂ Emissions',
-              '166 kg',
+              '173.3 kg',
             ),
 
             const SizedBox(height: 15),
@@ -53,17 +49,26 @@ class PredictionsScreen extends StatelessWidget {
             _buildPredictionCard(
               Icons.trending_up,
               Colors.orange,
-              'Monthly Trend',
+              'Expected Fuel Trend',
               'Slight Increase',
             ),
 
             const SizedBox(height: 15),
 
             _buildPredictionCard(
-              Icons.verified,
+              Icons.psychology,
               Colors.purple,
               'Prediction Confidence',
               'High',
+            ),
+
+            const SizedBox(height: 15),
+
+            _buildPredictionCard(
+              Icons.savings,
+              Colors.teal,
+              'Projected Fuel Cost',
+              'KES 12,800',
             ),
 
             const SizedBox(height: 30),
@@ -84,9 +89,8 @@ class PredictionsScreen extends StatelessWidget {
                   Icons.insights,
                   color: Colors.blue,
                 ),
-
                 title: Text(
-                  'Based on your recent fuel usage, EcoMate predicts a slight increase in fuel consumption this month.',
+                  'Based on recent fuel records, EcoMate forecasts a slight increase in fuel consumption over the next month.',
                 ),
               ),
             ),
@@ -97,9 +101,20 @@ class PredictionsScreen extends StatelessWidget {
                   Icons.lightbulb,
                   color: Colors.amber,
                 ),
-
                 title: Text(
-                  'Maintaining your current driving habits could keep emissions below 170 kg CO₂.',
+                  'Maintaining smooth acceleration and regular vehicle servicing can help reduce future fuel consumption.',
+                ),
+              ),
+            ),
+
+            Card(
+              child: ListTile(
+                leading: Icon(
+                  Icons.eco,
+                  color: Colors.green,
+                ),
+                title: Text(
+                  'Projected carbon emissions are expected to remain within an acceptable environmental range.',
                 ),
               ),
             ),
@@ -118,19 +133,15 @@ class PredictionsScreen extends StatelessWidget {
   ) {
     return Card(
       elevation: 3,
-
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color,
-
           child: Icon(
             icon,
             color: Colors.white,
           ),
         ),
-
         title: Text(title),
-
         subtitle: Text(
           value,
           style: const TextStyle(
