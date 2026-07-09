@@ -1,44 +1,67 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatelessWidget {
-    const SplashScreen({super.key});
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-            body: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                        Icon(
-                            Icons.local_gas_station,
-                            size: 80,
-                        ),
+import '../auth/login_screen.dart';
 
-                        SizedBox(height: 20),
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
-                        Text(
-                            'EcoMate',
-                            style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                            ),
-                        ),
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
 
-                        SizedBox(height: 10),
+class _SplashScreenState extends State<SplashScreen> {
 
-                        Text(
-                            'Fuel Consumption & Emission Tracker',
-                            textAlign: TextAlign.center,
-                        ),
+  @override
+  void initState() {
+    super.initState();
 
-                        SizedBox(height: 30),
-
-                        Text(
-                            'Loading...', 
-                        ),
-                    ],
-                ),
-            ),
+    Timer(
+      const Duration(seconds: 3),
+      () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const LoginScreen(),
+          ),
         );
-    }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+
+      backgroundColor: Colors.white,
+
+      body: Stack(
+
+        children: [
+
+          Center(
+            child: Image.asset(
+              'assets/images/splash.png',
+              width: 330,
+            ),
+          ),
+
+          const Positioned(
+            bottom: 50,
+            left: 0,
+            right: 0,
+
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Colors.green,
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
+  }
 }

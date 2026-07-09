@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ecomate',
-      home: const ReportsScreen(),
+      home: const SplashScreen(),
     );
   }
 }
