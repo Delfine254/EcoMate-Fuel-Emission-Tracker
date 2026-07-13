@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../dashboard/dashboard_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,7 +10,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   bool isPasswordHidden = true;
 
   @override
@@ -19,7 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       body: Center(
         child: SingleChildScrollView(
-
           child: Padding(
             padding: const EdgeInsets.all(20.0),
 
@@ -28,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               children: [
 
-                Text(
+                const Text(
                   'Welcome Back',
                   style: TextStyle(
                     fontSize: 28,
@@ -36,17 +35,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                Icon(
+                const Icon(
                   Icons.local_gas_station,
                   size: 80,
                   color: Colors.blue,
                 ),
 
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-                Text(
+                const Text(
                   'EcoMate',
                   style: TextStyle(
                     fontSize: 32,
@@ -55,25 +54,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 TextField(
                   obscureText: isPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.lock),
+                    border: const OutlineInputBorder(),
 
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -83,36 +82,42 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
 
                       onPressed: () {
-
                         setState(() {
-
                           isPasswordHidden = !isPasswordHidden;
-
                         });
-
                       },
                     ),
                   ),
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 SizedBox(
                   width: double.infinity,
 
                   child: ElevatedButton(
+
                     onPressed: () {
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const DashboardScreen(),
+                        ),
+                      );
 
                     },
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                      ),
                     ),
 
-                    child: Text(
+                    child: const Text(
                       'Login',
-
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -121,31 +126,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center,
 
                   children: [
 
-                    Text("Don't have an account?"),
+                    const Text(
+                      "Don't have an account?",
+                    ),
 
                     TextButton(
+
                       onPressed: () {
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
-
                           MaterialPageRoute(
-                            builder: (context) => RegisterScreen(),
+                            builder: (context) =>
+                                const RegisterScreen(),
                           ),
                         );
 
                       },
 
-                      child: Text(
+                      child: const Text(
                         'Register',
-
                         style: TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,

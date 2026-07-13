@@ -9,7 +9,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   bool isPasswordHidden = true;
   bool isConfirmPasswordHidden = true;
 
@@ -20,7 +19,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       body: Center(
         child: SingleChildScrollView(
-
           child: Padding(
             padding: const EdgeInsets.all(20.0),
 
@@ -29,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               children: [
 
-                Text(
+                const Text(
                   'Create Account',
                   style: TextStyle(
                     fontSize: 28,
@@ -37,17 +35,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                Icon(
+                const Icon(
                   Icons.local_gas_station,
                   size: 80,
                   color: Colors.blue,
                 ),
 
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-                Text(
+                const Text(
                   'EcoMate',
                   style: TextStyle(
                     fontSize: 32,
@@ -56,35 +54,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Full Name',
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 TextField(
                   obscureText: isPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.lock),
+                    border: const OutlineInputBorder(),
 
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -94,27 +92,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
 
                       onPressed: () {
-
                         setState(() {
-
-                          isPasswordHidden = !isPasswordHidden;
-
+                          isPasswordHidden =
+                              !isPasswordHidden;
                         });
-
                       },
                     ),
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 TextField(
-                  obscureText: isConfirmPasswordHidden,
+                  obscureText:
+                      isConfirmPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
-                    prefixIcon: Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(),
+                    prefixIcon:
+                        const Icon(Icons.lock_outline),
+                    border:
+                        const OutlineInputBorder(),
 
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -124,37 +122,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
 
                       onPressed: () {
-
                         setState(() {
-
                           isConfirmPasswordHidden =
                               !isConfirmPasswordHidden;
-
                         });
-
                       },
                     ),
                   ),
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 SizedBox(
                   width: double.infinity,
 
                   child: ElevatedButton(
+
                     onPressed: () {
+
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Registration Successful!',
+                          ),
+                        ),
+                      );
+
+                      Future.delayed(
+                        const Duration(
+                            milliseconds: 600),
+                        () {
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LoginScreen(),
+                            ),
+                          );
+
+                        },
+                      );
 
                     },
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding:
+                          const EdgeInsets.symmetric(
+                        vertical: 15,
+                      ),
                     ),
 
-                    child: Text(
+                    child: const Text(
                       'Register',
-
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -163,34 +185,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center,
 
                   children: [
 
-                    Text("Already have an account?"),
+                    const Text(
+                      "Already have an account?",
+                    ),
 
                     TextButton(
+
                       onPressed: () {
 
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
-
                           MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
+                            builder: (context) =>
+                                const LoginScreen(),
                           ),
                         );
 
                       },
 
-                      child: Text(
+                      child: const Text(
                         'Login',
-
                         style: TextStyle(
                           color: Colors.green,
-                          fontWeight: FontWeight.bold,
+                          fontWeight:
+                              FontWeight.bold,
                         ),
                       ),
                     ),

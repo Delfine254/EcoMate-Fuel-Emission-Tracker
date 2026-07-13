@@ -13,7 +13,6 @@ class VehicleScreen extends StatefulWidget {
 }
 
 class _VehicleScreenState extends State<VehicleScreen> {
-
   List<Vehicle> vehicles = [];
 
   @override
@@ -27,9 +26,63 @@ class _VehicleScreenState extends State<VehicleScreen> {
     setState(() {});
   }
 
+  Future<void> deleteVehicle(Vehicle vehicle) async {
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Vehicle'),
+
+          content: Text(
+            'Are you sure you want to delete "${vehicle.name}"?',
+          ),
+
+          actions: [
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+
+              child: const Text('Cancel'),
+            ),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      await DatabaseHelper.deleteVehicle(vehicle.id!);
+
+      loadVehicles();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vehicle deleted successfully.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Management'),
@@ -60,12 +113,9 @@ class _VehicleScreenState extends State<VehicleScreen> {
               width: double.infinity,
 
               child: ElevatedButton.icon(
-
                 onPressed: () async {
 
-                  bool? saved =
-                      await Navigator.push(
-
+                  bool? saved = await Navigator.push(
                     context,
 
                     MaterialPageRoute(
@@ -77,7 +127,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
                   if (saved == true) {
                     loadVehicles();
                   }
-
                 },
 
                 icon: const Icon(Icons.add),
@@ -91,7 +140,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
             const SizedBox(height: 20),
 
             Expanded(
-
               child: vehicles.isEmpty
 
                   ? const Center(
@@ -106,6 +154,8 @@ class _VehicleScreenState extends State<VehicleScreen> {
 
                       itemBuilder: (context, index) {
 
+                        final vehicle = vehicles[index];
+
                         return Card(
 
                           child: ListTile(
@@ -115,21 +165,28 @@ class _VehicleScreenState extends State<VehicleScreen> {
                               color: Colors.blue,
                             ),
 
-                            title: Text(
-                              vehicles[index].name,
-                            ),
+                            title: Text(vehicle.name),
 
                             subtitle: Text(
-                              '${vehicles[index].fuelType} • ${vehicles[index].efficiency} km/L',
+                              '${vehicle.fuelType} • ${vehicle.efficiency} km/L',
                             ),
 
+                            trailing: IconButton(
+
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+
+                              onPressed: () {
+                                deleteVehicle(vehicle);
+                              },
+                            ),
                           ),
                         );
-
                       },
                     ),
             ),
-
           ],
         ),
       ),

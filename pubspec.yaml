@@ -37,6 +37,8 @@ dependencies:
   sqflite: ^2.4.2
   sqflite_common_ffi: ^2.3.6
   path: ^1.9.1
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +63,7 @@ flutter:
   uses-material-design: true
 
   assets:
-  - assets/images/splash.png
+    - assets/images/splash.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

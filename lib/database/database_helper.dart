@@ -88,6 +88,16 @@ class DatabaseHelper {
     );
   }
 
+  static Future<int> deleteVehicle(int id) async {
+    final db = await database;
+
+    return await db.delete(
+      'vehicles',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   // ==========================
   // FUEL LOGS
   // ==========================
@@ -117,14 +127,49 @@ class DatabaseHelper {
       ),
     );
   }
+
+  // ==========================
+  // REPORT CALCULATIONS
+  // ==========================
+
+  static Future<double> getTotalFuelUsed() async {
+    final db = await database;
+
+    final result = await db.rawQuery(
+      'SELECT SUM(litres) AS total FROM fuel_logs',
+    );
+
+    return (result.first['total'] as num?)?.toDouble() ?? 0.0;
+  }
+
+  static Future<int> getVehicleCount() async {
+    final db = await database;
+
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) AS total FROM vehicles',
+    );
+
+    return (result.first['total'] as int?) ?? 0;
+  }
+
+  static Future<double> getTotalEmissions() async {
+    double totalFuel = await getTotalFuelUsed();
+
+    return totalFuel * 2.31;
+  }
+
+  // ==========================
+  // DATABASE RESET (Development Only)
+  // ==========================
+
   static Future<void> deleteDatabaseFile() async {
-  String path = join(
-    await getDatabasesPath(),
-    'ecomate.db',
-  );
+    String path = join(
+      await getDatabasesPath(),
+      'ecomate.db',
+    );
 
-  await deleteDatabase(path);
+    await deleteDatabase(path);
 
-  _database = null;
-}
+    _database = null;
+  }
 }
