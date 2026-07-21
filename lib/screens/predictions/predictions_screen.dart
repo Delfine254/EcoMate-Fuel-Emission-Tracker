@@ -1,21 +1,93 @@
 import 'package:flutter/material.dart';
+
+import '../../database/database_helper.dart';
 import '../../widgets/custom_drawer.dart';
 
-class PredictionsScreen extends StatelessWidget {
+class PredictionsScreen extends StatefulWidget {
   const PredictionsScreen({super.key});
 
   @override
+  State<PredictionsScreen> createState() =>
+      _PredictionsScreenState();
+}
+
+class _PredictionsScreenState
+    extends State<PredictionsScreen> {
+
+  double predictedFuel = 0;
+  double predictedEmissions = 0;
+  int fuelEntries = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPredictions();
+  }
+
+  Future<void> loadPredictions() async {
+
+    predictedFuel =
+        await DatabaseHelper.getPredictedMonthlyFuelUsage();
+
+    predictedEmissions =
+        await DatabaseHelper.getPredictedMonthlyEmissions();
+
+    fuelEntries =
+        await DatabaseHelper.getFuelEntryCount();
+
+    setState(() {});
+  }
+
+  String getConfidence() {
+
+    if (fuelEntries >= 10) {
+      return "High";
+    }
+
+    if (fuelEntries >= 5) {
+      return "Medium";
+    }
+
+    return "Low";
+  }
+
+  String getTrend() {
+
+    if (predictedFuel > 100) {
+      return "Increasing";
+    }
+
+    if (predictedFuel > 50) {
+      return "Stable";
+    }
+
+    return "Low Usage";
+  }
+
+  double getProjectedCost() {
+    return predictedFuel * 180;
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       appBar: AppBar(
         title: const Text('Predictions'),
         backgroundColor: Colors.blue,
       ),
+
       drawer: const CustomDrawer(),
+
       body: SingleChildScrollView(
+
         padding: const EdgeInsets.all(16),
+
         child: Column(
+
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
 
             const Text(
@@ -32,7 +104,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.local_gas_station,
               Colors.blue,
               'Expected Fuel Consumption',
-              '75 Litres',
+              '${predictedFuel.toStringAsFixed(1)} Litres',
             ),
 
             const SizedBox(height: 15),
@@ -41,7 +113,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.eco,
               Colors.green,
               'Expected CO₂ Emissions',
-              '173.3 kg',
+              '${predictedEmissions.toStringAsFixed(1)} kg',
             ),
 
             const SizedBox(height: 15),
@@ -50,7 +122,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.trending_up,
               Colors.orange,
               'Expected Fuel Trend',
-              'Slight Increase',
+              getTrend(),
             ),
 
             const SizedBox(height: 15),
@@ -59,7 +131,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.psychology,
               Colors.purple,
               'Prediction Confidence',
-              'High',
+              getConfidence(),
             ),
 
             const SizedBox(height: 15),
@@ -68,7 +140,7 @@ class PredictionsScreen extends StatelessWidget {
               Icons.savings,
               Colors.teal,
               'Projected Fuel Cost',
-              'KES 12,800',
+              'KES ${getProjectedCost().toStringAsFixed(0)}',
             ),
 
             const SizedBox(height: 30),
@@ -85,36 +157,38 @@ class PredictionsScreen extends StatelessWidget {
 
             Card(
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.insights,
                   color: Colors.blue,
                 ),
                 title: Text(
-                  'Based on recent fuel records, EcoMate forecasts a slight increase in fuel consumption over the next month.',
+                  'Based on your previous fuel records, EcoMate predicts approximately ${predictedFuel.toStringAsFixed(1)} litres of fuel may be consumed during your next month of driving.',
                 ),
               ),
             ),
 
             Card(
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.lightbulb,
                   color: Colors.amber,
                 ),
                 title: Text(
-                  'Maintaining smooth acceleration and regular vehicle servicing can help reduce future fuel consumption.',
+                  predictedFuel > 100
+                      ? 'Fuel usage is increasing. Consider smoother driving habits and regular vehicle servicing.'
+                      : 'Current fuel usage appears stable. Continue maintaining efficient driving habits.',
                 ),
               ),
             ),
 
             Card(
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.eco,
                   color: Colors.green,
                 ),
                 title: Text(
-                  'Projected carbon emissions are expected to remain within an acceptable environmental range.',
+                  'Estimated carbon emissions for next month are ${predictedEmissions.toStringAsFixed(1)} kg based on your current usage pattern.',
                 ),
               ),
             ),
@@ -131,9 +205,13 @@ class PredictionsScreen extends StatelessWidget {
     String title,
     String value,
   ) {
+
     return Card(
+
       elevation: 3,
+
       child: ListTile(
+
         leading: CircleAvatar(
           backgroundColor: color,
           child: Icon(
@@ -141,7 +219,9 @@ class PredictionsScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+
         title: Text(title),
+
         subtitle: Text(
           value,
           style: const TextStyle(

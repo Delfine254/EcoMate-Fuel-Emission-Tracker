@@ -1,21 +1,76 @@
 import 'package:flutter/material.dart';
+
+import '../../database/database_helper.dart';
 import '../../widgets/custom_drawer.dart';
 
-class AnalyticsScreen extends StatelessWidget {
+class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
 
   @override
+  State<AnalyticsScreen> createState() => _AnalyticsScreenState();
+}
+
+class _AnalyticsScreenState extends State<AnalyticsScreen> {
+
+  double totalFuel = 0;
+  double totalEmissions = 0;
+  int vehicleCount = 0;
+  int fuelEntries = 0;
+
+  double averageFuel = 0;
+  double highestRefill = 0;
+  double lowestRefill = 0;
+  double estimatedCost = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadAnalytics();
+  }
+
+  Future<void> loadAnalytics() async {
+
+    totalFuel =
+        await DatabaseHelper.getSelectedVehicleFuelUsed();
+
+    totalEmissions =
+        await DatabaseHelper.getSelectedVehicleEmissions();
+
+    vehicleCount =
+        await DatabaseHelper.getVehicleCount();
+
+    fuelEntries =
+        await DatabaseHelper.getSelectedVehicleEntries();
+
+if (fuelEntries > 0) {
+  averageFuel = totalFuel / fuelEntries;
+}
+
+estimatedCost = totalFuel * 180;
+
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       appBar: AppBar(
         title: const Text('Analytics'),
         backgroundColor: Colors.blue,
       ),
+
       drawer: const CustomDrawer(),
+
       body: SingleChildScrollView(
+
         padding: const EdgeInsets.all(16),
+
         child: Column(
+
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
 
             const Text(
@@ -32,7 +87,7 @@ class AnalyticsScreen extends StatelessWidget {
               Icons.local_gas_station,
               Colors.blue,
               'Total Fuel Logged',
-              '72 Litres',
+              '${totalFuel.toStringAsFixed(1)} Litres',
             ),
 
             const SizedBox(height: 15),
@@ -41,7 +96,7 @@ class AnalyticsScreen extends StatelessWidget {
               Icons.eco,
               Colors.green,
               'Total CO₂ Emissions',
-              '166.3 kg',
+              '${totalEmissions.toStringAsFixed(1)} kg',
             ),
 
             const SizedBox(height: 15),
@@ -50,25 +105,43 @@ class AnalyticsScreen extends StatelessWidget {
               Icons.directions_car,
               Colors.orange,
               'Registered Vehicles',
-              '2 Vehicles',
+              '$vehicleCount Vehicles',
             ),
 
             const SizedBox(height: 15),
 
             _buildCard(
-              Icons.speed,
+              Icons.analytics,
               Colors.purple,
-              'Average Fuel Efficiency',
-              '18.0 km/L',
+              'Fuel Entries',
+              '$fuelEntries Entries',
             ),
 
             const SizedBox(height: 15),
 
             _buildCard(
-              Icons.attach_money,
+              Icons.local_gas_station,
               Colors.teal,
-              'Estimated Monthly Fuel Cost',
-              'KES 12,240',
+              'Average Fuel Per Entry',
+              '${averageFuel.toStringAsFixed(1)} Litres',
+            ),
+
+            const SizedBox(height: 15),
+
+            _buildCard(
+              Icons.arrow_upward,
+              Colors.red,
+              'Highest Fuel Refill',
+              '${highestRefill.toStringAsFixed(1)} Litres',
+            ),
+
+            const SizedBox(height: 15),
+
+            _buildCard(
+              Icons.arrow_downward,
+              Colors.indigo,
+              'Lowest Fuel Refill',
+              '${lowestRefill.toStringAsFixed(1)} Litres',
             ),
 
             const SizedBox(height: 30),
@@ -85,39 +158,46 @@ class AnalyticsScreen extends StatelessWidget {
 
             Card(
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.check_circle,
                   color: Colors.green,
                 ),
                 title: Text(
-                  'Fuel consumption remained stable across recent logs.',
+                  fuelEntries > 5
+                      ? 'Great! You are consistently tracking your fuel usage.'
+                      : 'Keep adding fuel logs for better analytics.',
                 ),
               ),
             ),
 
             Card(
               child: ListTile(
-                leading: Icon(
-                  Icons.speed,
+                leading: const Icon(
+                  Icons.local_gas_station,
                   color: Colors.blue,
                 ),
                 title: Text(
-                  'Average fuel efficiency indicates economical driving habits.',
+                  averageFuel > 20
+                      ? 'Your average refill is relatively high.'
+                      : 'Your average refill is within the normal range.',
                 ),
               ),
             ),
 
             Card(
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.eco,
                   color: Colors.green,
                 ),
                 title: Text(
-                  'Estimated carbon emissions remain within acceptable limits.',
+                  totalEmissions > 200
+                      ? 'Consider reducing fuel consumption to lower emissions.'
+                      : 'Your estimated emissions remain within acceptable limits.',
                 ),
               ),
             ),
+
           ],
         ),
       ),
@@ -130,9 +210,13 @@ class AnalyticsScreen extends StatelessWidget {
     String title,
     String value,
   ) {
+
     return Card(
+
       elevation: 3,
+
       child: ListTile(
+
         leading: CircleAvatar(
           backgroundColor: color,
           child: Icon(
@@ -140,7 +224,9 @@ class AnalyticsScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+
         title: Text(title),
+
         subtitle: Text(
           value,
           style: const TextStyle(

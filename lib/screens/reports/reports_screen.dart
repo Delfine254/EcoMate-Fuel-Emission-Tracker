@@ -47,16 +47,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   Future<void> loadReportData() async {
-    totalFuel = await DatabaseHelper.getTotalFuelUsed();
 
-    totalEmissions =
-        await DatabaseHelper.getTotalEmissions();
+  totalFuel =
+      await DatabaseHelper.getFilteredFuelUsed(
+    selectedFilter,
+  );
 
-    vehicleCount =
-        await DatabaseHelper.getVehicleCount();
+  totalEmissions =
+      await DatabaseHelper.getFilteredEmissions(
+    selectedFilter,
+  );
 
-    setState(() {});
-  }
+  vehicleCount =
+      await DatabaseHelper.getVehicleCount();
+
+  setState(() {});
+}
 
   String getCurrentDate() {
     DateTime now = DateTime.now();
@@ -265,15 +271,13 @@ Future<void> exportPDF() async {
 
                       ],
 
-                      onChanged: (value) {
+                      onChanged: (value) async {
 
-                        setState(() {
+  selectedFilter = value!;
 
-                          selectedFilter = value!;
+  await loadReportData();
 
-                        });
-
-                      },
+},
                     ),
 
                   ],

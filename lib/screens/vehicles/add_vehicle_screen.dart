@@ -143,6 +143,8 @@ class _AddVehicleScreenState
 
     Vehicle vehicle = Vehicle(
 
+      userEmail: DatabaseHelper.currentUserEmail!,
+
       name: vehicleNameController.text.trim(),
 
       fuelType: selectedFuelType,

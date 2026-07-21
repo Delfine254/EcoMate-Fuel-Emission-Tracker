@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../database/database_helper.dart';
+import '../../models/user_model.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'register_screen.dart';
 
@@ -11,6 +13,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isPasswordHidden = true;
+
+final TextEditingController emailController =
+    TextEditingController();
+
+final TextEditingController passwordController =
+    TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 30),
 
                 TextField(
-                  decoration: const InputDecoration(
+  controller: emailController,
+  decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
@@ -67,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 TextField(
-                  obscureText: isPasswordHidden,
+  controller: passwordController,
+  obscureText: isPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -81,11 +91,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             : Icons.visibility,
                       ),
 
-                      onPressed: () {
-                        setState(() {
-                          isPasswordHidden = !isPasswordHidden;
-                        });
-                      },
+  onPressed: () {
+  setState(() {
+    isPasswordHidden = !isPasswordHidden;
+  });
+},
                     ),
                   ),
                 ),
@@ -97,17 +107,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   child: ElevatedButton(
 
-                    onPressed: () {
+                    onPressed: () async {
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const DashboardScreen(),
-                        ),
-                      );
+  User? user = await DatabaseHelper.loginUser(
+    emailController.text.trim(),
+    passwordController.text,
+  );
 
-                    },
+  if (!mounted) return;
+
+  if (user != null) {
+    
+    DatabaseHelper.currentUserEmail = user.email;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Welcome ${user.fullName}!",
+        ),
+      ),
+    );
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const DashboardScreen(),
+      ),
+    );
+
+  } else {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Invalid email or password.",
+        ),
+      ),
+    );
+
+  }
+
+},
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

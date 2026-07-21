@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../database/database_helper.dart';
+import '../../models/user_model.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -11,6 +13,18 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   bool isPasswordHidden = true;
   bool isConfirmPasswordHidden = true;
+
+  final TextEditingController fullNameController =
+    TextEditingController();
+
+final TextEditingController emailController =
+    TextEditingController();
+
+final TextEditingController passwordController =
+    TextEditingController();
+
+final TextEditingController confirmPasswordController =
+    TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +71,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 30),
 
                 TextField(
-                  decoration: const InputDecoration(
+  controller: fullNameController,
+  decoration: const InputDecoration(
                     labelText: 'Full Name',
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
@@ -67,7 +82,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
 
                 TextField(
-                  decoration: const InputDecoration(
+  controller: emailController,
+  decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
@@ -77,7 +93,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
 
                 TextField(
-                  obscureText: isPasswordHidden,
+  controller: passwordController,
+  obscureText: isPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -91,12 +108,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             : Icons.visibility,
                       ),
 
-                      onPressed: () {
-                        setState(() {
-                          isPasswordHidden =
-                              !isPasswordHidden;
-                        });
-                      },
+  onPressed: () {
+  setState(() {
+    isPasswordHidden = !isPasswordHidden;
+  });
+},
                     ),
                   ),
                 ),
@@ -104,8 +120,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
 
                 TextField(
-                  obscureText:
-                      isConfirmPasswordHidden,
+  controller: confirmPasswordController,
+  obscureText: isConfirmPasswordHidden,
 
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
@@ -138,34 +154,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   child: ElevatedButton(
 
-                    onPressed: () {
+                   onPressed: () async {
 
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Registration Successful!',
-                          ),
-                        ),
-                      );
+  if (fullNameController.text.isEmpty ||
+      emailController.text.isEmpty ||
+      passwordController.text.isEmpty ||
+      confirmPasswordController.text.isEmpty) {
 
-                      Future.delayed(
-                        const Duration(
-                            milliseconds: 600),
-                        () {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Please fill in all fields."),
+      ),
+    );
+    return;
+  }
 
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoginScreen(),
-                            ),
-                          );
+  if (passwordController.text !=
+      confirmPasswordController.text) {
 
-                        },
-                      );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Passwords do not match."),
+      ),
+    );
+    return;
+  }
 
-                    },
+  if (await DatabaseHelper.emailExists(
+      emailController.text.trim())) {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Email already exists."),
+      ),
+    );
+    return;
+  }
+
+  User user = User(
+    fullName: fullNameController.text.trim(),
+    email: emailController.text.trim(),
+    password: passwordController.text,
+  );
+
+  await DatabaseHelper.insertUser(user);
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Registration Successful!"),
+    ),
+  );
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const LoginScreen(),
+    ),
+  );
+},
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,

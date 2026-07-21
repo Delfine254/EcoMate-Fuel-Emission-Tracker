@@ -36,8 +36,9 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
       vehicles = data;
 
       if (vehicles.isNotEmpty) {
-        selectedVehicle = vehicles.first.name;
-      }
+  selectedVehicle = vehicles.first.name;
+  DatabaseHelper.selectedVehicle = selectedVehicle;
+}
     });
   }
 
@@ -87,10 +88,11 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                   }).toList(),
 
                   onChanged: (value) {
-                    setState(() {
-                      selectedVehicle = value!;
-                    });
-                  },
+  setState(() {
+    selectedVehicle = value!;
+    DatabaseHelper.selectedVehicle = value;
+  });
+},
                 ),
 
               const SizedBox(height: 20),
@@ -166,6 +168,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                     try {
 
                       FuelLog fuelLog = FuelLog(
+                        userEmail: DatabaseHelper.currentUserEmail!,
                         vehicleName: selectedVehicle!,
                         litres: double.tryParse(
                               fuelController.text,

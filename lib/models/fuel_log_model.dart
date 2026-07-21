@@ -1,5 +1,6 @@
 class FuelLog {
   int? id;
+  String userEmail;
   String vehicleName;
   double litres;
   double odometer;
@@ -7,6 +8,7 @@ class FuelLog {
 
   FuelLog({
     this.id,
+    required this.userEmail,
     required this.vehicleName,
     required this.litres,
     required this.odometer,
@@ -16,6 +18,7 @@ class FuelLog {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'userEmail': userEmail,
       'vehicleName': vehicleName,
       'litres': litres,
       'odometer': odometer,
@@ -26,6 +29,7 @@ class FuelLog {
   factory FuelLog.fromMap(Map<String, dynamic> map) {
     return FuelLog(
       id: map['id'],
+      userEmail: map['userEmail'],
       vehicleName: map['vehicleName'],
       litres: map['litres'],
       odometer: map['odometer'],
