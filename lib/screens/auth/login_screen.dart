@@ -119,6 +119,7 @@ final TextEditingController passwordController =
   if (user != null) {
     
     DatabaseHelper.currentUserEmail = user.email;
+    await DatabaseHelper.loadSelectedVehicle();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

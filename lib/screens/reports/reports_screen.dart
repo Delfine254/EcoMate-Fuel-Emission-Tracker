@@ -48,6 +48,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Future<void> loadReportData() async {
 
+  if (selectedFilter == 'All Time') {
+  totalFuel =
+      await DatabaseHelper.getSelectedVehicleFuelUsed();
+
+  totalEmissions =
+      await DatabaseHelper.getSelectedVehicleEmissions();
+} else {
   totalFuel =
       await DatabaseHelper.getFilteredFuelUsed(
     selectedFilter,
@@ -57,6 +64,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       await DatabaseHelper.getFilteredEmissions(
     selectedFilter,
   );
+}
 
   vehicleCount =
       await DatabaseHelper.getVehicleCount();

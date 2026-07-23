@@ -21,10 +21,13 @@ class _VehicleScreenState extends State<VehicleScreen> {
     loadVehicles();
   }
 
-  Future<void> loadVehicles() async {
-    vehicles = await DatabaseHelper.getVehicles();
-    setState(() {});
-  }
+ Future<void> loadVehicles() async {
+  final data = await DatabaseHelper.getVehicles();
+
+  setState(() {
+    vehicles = data;
+  });
+}
 
   Future<void> deleteVehicle(Vehicle vehicle) async {
     bool? confirm = await showDialog<bool>(

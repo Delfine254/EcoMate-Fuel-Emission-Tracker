@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import '../models/vehicle_model.dart';
 import '../models/fuel_log_model.dart';
 import '../models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseHelper {
   static Database? _database;
@@ -277,17 +278,17 @@ static Future<double> getFilteredFuelUsed(String filter) async {
   switch (filter) {
     case 'Today':
       condition =
-          "WHERE date = date('now','localtime')";
+          "AND date = date('now','localtime')";
       break;
 
     case 'This Week':
       condition =
-          "WHERE date >= date('now','-6 days')";
+          "AND date >= date('now','-6 days')";
       break;
 
     case 'This Month':
       condition =
-          "WHERE strftime('%Y-%m', date) = strftime('%Y-%m','now')";
+          "AND strftime('%Y-%m', date) = strftime('%Y-%m','now')";
       break;
 
     default:
@@ -295,7 +296,13 @@ static Future<double> getFilteredFuelUsed(String filter) async {
   }
 
   final result = await db.rawQuery(
-    'SELECT SUM(litres) AS total FROM fuel_logs $condition',
+    '''
+    SELECT SUM(litres) AS total
+    FROM fuel_logs
+    WHERE userEmail = ?
+    $condition
+    ''',
+    [currentUserEmail],
   );
 
   return (result.first['total'] as num?)?.toDouble() ?? 0.0;
@@ -313,18 +320,16 @@ static Future<int> getFilteredFuelEntries(String filter) async {
 
   switch (filter) {
     case 'Today':
-      condition =
-          "WHERE date = date('now','localtime')";
+      condition = "AND date = date('now','localtime')";
       break;
 
     case 'This Week':
-      condition =
-          "WHERE date >= date('now','-6 days')";
+      condition = "AND date >= date('now','-6 days')";
       break;
 
     case 'This Month':
       condition =
-          "WHERE strftime('%Y-%m', date) = strftime('%Y-%m','now')";
+          "AND strftime('%Y-%m', date) = strftime('%Y-%m','now')";
       break;
 
     default:
@@ -332,7 +337,13 @@ static Future<int> getFilteredFuelEntries(String filter) async {
   }
 
   final result = await db.rawQuery(
-    'SELECT COUNT(*) AS total FROM fuel_logs $condition',
+    '''
+    SELECT COUNT(*) AS total
+    FROM fuel_logs
+    WHERE userEmail = ?
+    $condition
+    ''',
+    [currentUserEmail],
   );
 
   return (result.first['total'] as int?) ?? 0;
@@ -346,8 +357,9 @@ static Future<double> getSelectedVehicleFuelUsed() async {
     SELECT SUM(litres) AS total
     FROM fuel_logs
     WHERE vehicleName = ?
+    AND userEmail = ?
     ''',
-    [selectedVehicle],
+    [selectedVehicle, currentUserEmail],
   );
 
   return (result.first['total'] as num?)?.toDouble() ?? 0.0;
@@ -365,8 +377,12 @@ static Future<int> getSelectedVehicleEntries() async {
     SELECT COUNT(*) AS total
     FROM fuel_logs
     WHERE vehicleName = ?
+    AND userEmail = ?
     ''',
-    [selectedVehicle],
+    [
+      selectedVehicle,
+      currentUserEmail,
+    ],
   );
 
   return (result.first['total'] as int?) ?? 0;
@@ -404,7 +420,6 @@ static Future<double> getAverageFuelPerEntry() async {
 
   return (result.first['average'] as num?)?.toDouble() ?? 0.0;
 }
-
 static Future<double> getHighestFuelRefill() async {
   final db = await database;
 
@@ -413,8 +428,12 @@ static Future<double> getHighestFuelRefill() async {
     SELECT MAX(litres) AS highest
     FROM fuel_logs
     WHERE userEmail = ?
+    AND vehicleName = ?
     ''',
-    [currentUserEmail],
+    [
+      currentUserEmail,
+      selectedVehicle,
+    ],
   );
 
   return (result.first['highest'] as num?)?.toDouble() ?? 0.0;
@@ -428,8 +447,12 @@ static Future<double> getLowestFuelRefill() async {
     SELECT MIN(litres) AS lowest
     FROM fuel_logs
     WHERE userEmail = ?
+    AND vehicleName = ?
     ''',
-    [currentUserEmail],
+    [
+      currentUserEmail,
+      selectedVehicle,
+    ],
   );
 
   return (result.first['lowest'] as num?)?.toDouble() ?? 0.0;
@@ -519,4 +542,23 @@ static Future<String> getEnvironmentalAdvice() async {
 
     _database = null;
   }
+  static Future<void> saveSelectedVehicle(String vehicleName) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString(
+    'selectedVehicle',
+    vehicleName,
+  );
+
+  selectedVehicle = vehicleName;
+}
+
+static Future<String?> loadSelectedVehicle() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  selectedVehicle =
+      prefs.getString('selectedVehicle');
+
+  return selectedVehicle;
+}
 }

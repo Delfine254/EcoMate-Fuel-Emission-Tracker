@@ -42,6 +42,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     fuelEntries =
         await DatabaseHelper.getSelectedVehicleEntries();
 
+highestRefill =
+    await DatabaseHelper.getHighestFuelRefill();
+
+lowestRefill =
+    await DatabaseHelper.getLowestFuelRefill();
+
 if (fuelEntries > 0) {
   averageFuel = totalFuel / fuelEntries;
 }

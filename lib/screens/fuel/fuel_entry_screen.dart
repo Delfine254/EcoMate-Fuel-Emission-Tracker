@@ -30,17 +30,36 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
   }
 
   Future<void> loadVehicles() async {
-    final data = await DatabaseHelper.getVehicles();
+  final data = await DatabaseHelper.getVehicles();
 
-    setState(() {
-      vehicles = data;
+  final savedVehicle =
+      await DatabaseHelper.loadSelectedVehicle();
 
-      if (vehicles.isNotEmpty) {
-  selectedVehicle = vehicles.first.name;
-  DatabaseHelper.selectedVehicle = selectedVehicle;
+  setState(() {
+    vehicles = data;
+
+    if (vehicles.isEmpty) return;
+
+    if (savedVehicle != null &&
+        vehicles.any((v) => v.name == savedVehicle)) {
+
+      selectedVehicle = savedVehicle;
+
+    } else {
+
+      selectedVehicle = vehicles.first.name;
+
+      DatabaseHelper.selectedVehicle =
+          selectedVehicle;
+
+      DatabaseHelper.saveSelectedVehicle(
+          selectedVehicle!);
+    }
+
+    DatabaseHelper.selectedVehicle =
+        selectedVehicle;
+  });
 }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +106,13 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
                     );
                   }).toList(),
 
-                  onChanged: (value) {
+ onChanged: (value) async {
   setState(() {
     selectedVehicle = value!;
     DatabaseHelper.selectedVehicle = value;
   });
+
+  await DatabaseHelper.saveSelectedVehicle(value!);
 },
                 ),
 

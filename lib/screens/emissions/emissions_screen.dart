@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
+
+import '../../database/database_helper.dart';
+import '../../models/vehicle_model.dart';
+import '../../models/fuel_log_model.dart';
 import '../../widgets/custom_drawer.dart';
 
-class EmissionsScreen extends StatelessWidget {
+class EmissionsScreen extends StatefulWidget {
   const EmissionsScreen({super.key});
+
+  @override
+  State<EmissionsScreen> createState() => _EmissionsScreenState();
+}
+
+class _EmissionsScreenState extends State<EmissionsScreen> {
+  List<Vehicle> vehicles = [];
+  List<FuelLog> fuelLogs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    vehicles = await DatabaseHelper.getVehicles();
+    fuelLogs = await DatabaseHelper.getFuelLogs();
+
+    setState(() {});
+  }
 
   String getStatus(double emissions) {
     if (emissions <= 50) {
@@ -26,10 +51,6 @@ class EmissionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    double axioEmission = 20 * 2.31;
-    double noteEmission = 35 * 2.31;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Emissions'),
@@ -39,7 +60,7 @@ class EmissionsScreen extends StatelessWidget {
       drawer: const CustomDrawer(),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,69 +77,66 @@ class EmissionsScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Card(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.directions_car,
-                  color: Colors.blue,
-                ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: vehicles.length,
 
-                title: const Text(
-                  'Toyota Axio',
-                ),
+                itemBuilder: (context, index) {
 
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  final vehicle = vehicles[index];
 
-                  children: [
+                  double litres = fuelLogs
+                      .where((log) =>
+                          log.vehicleName == vehicle.name)
+                      .fold(
+                        0.0,
+                        (sum, log) => sum + log.litres,
+                      );
 
-                    Text(
-                      '${axioEmission.toStringAsFixed(1)} kg CO₂',
-                    ),
+                  double factor = 2.31;
 
-                    Text(
-                      getStatus(axioEmission),
-                      style: TextStyle(
-                        color: getStatusColor(axioEmission),
-                        fontWeight: FontWeight.bold,
+                  if (vehicle.fuelType == 'Diesel') {
+                    factor = 2.68;
+                  } else if (vehicle.fuelType == 'Hybrid') {
+                    factor = 1.80;
+                  } else if (vehicle.fuelType == 'Electric') {
+                    factor = 0;
+                  }
+
+                  double emissions = litres * factor;
+
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.directions_car,
+                        color: Colors.blue,
+                      ),
+
+                      title: Text(vehicle.name),
+
+                      subtitle: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+
+                        children: [
+
+                          Text(
+                            '${emissions.toStringAsFixed(1)} kg CO₂',
+                          ),
+
+                          Text(
+                            getStatus(emissions),
+                            style: TextStyle(
+                              color: getStatusColor(emissions),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Card(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.directions_car,
-                  color: Colors.green,
-                ),
-
-                title: const Text(
-                  'Nissan Note',
-                ),
-
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                  children: [
-
-                    Text(
-                      '${noteEmission.toStringAsFixed(1)} kg CO₂',
-                    ),
-
-                    Text(
-                      getStatus(noteEmission),
-                      style: TextStyle(
-                        color: getStatusColor(noteEmission),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           ],
