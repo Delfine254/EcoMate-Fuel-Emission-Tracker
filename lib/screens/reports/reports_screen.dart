@@ -1,4 +1,8 @@
 import 'dart:typed_data';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
@@ -136,7 +140,7 @@ Future<void> exportPDF() async {
             pw.SizedBox(height: 10),
 
             pw.Text(
-              'Total CO₂ Emissions: ${totalEmissions.toStringAsFixed(1)} kg',
+              'Total CO2 Emissions: ${totalEmissions.toStringAsFixed(1)} kg',
             ),
 
             pw.SizedBox(height: 10),
@@ -169,10 +173,24 @@ Future<void> exportPDF() async {
 
             pw.SizedBox(height: 10),
 
-            pw.Text(
-              'This report summarizes your recorded fuel consumption, estimated carbon emissions, fuel efficiency and forecast trends. Continue monitoring fuel usage, servicing your vehicles regularly and following EcoMate recommendations to improve fuel economy and reduce environmental impact.',
-            ),
+           pw.Text(
+  'This report summarizes your recorded fuel consumption, estimated carbon emissions, fuel efficiency and forecast trends.',
+),
 
+pw.SizedBox(height: 12),
+
+pw.Text(
+  'Recommendation:',
+  style: pw.TextStyle(
+    fontWeight: pw.FontWeight.bold,
+  ),
+),
+
+pw.SizedBox(height: 5),
+
+pw.Text(
+  'Continue monitoring fuel usage, service your vehicle(s) regularly and follow EcoMate recommendations to improve fuel economy and reduce environmental impact.',
+),
           ],
 
         );
@@ -183,15 +201,35 @@ Future<void> exportPDF() async {
 
   );
 
-  await Printing.layoutPdf(
+  String? outputFile = await FilePicker.platform.saveFile(
+  dialogTitle: 'Save EcoMate Report',
+  fileName: 'EcoMate_Report.pdf',
+  type: FileType.custom,
+  allowedExtensions: ['pdf'],
+);
 
-    onLayout: (PdfPageFormat format) async {
+if (outputFile != null) {
 
-      return pdf.save();
+  if (outputFile != null && !outputFile.toLowerCase().endsWith('.pdf')) {
+  outputFile = '$outputFile.pdf';
+}
 
-    },
+  final file = File(outputFile);
 
+  await file.writeAsBytes(
+    await pdf.save(),
   );
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        'PDF saved successfully!',
+      ),
+    ),
+  );
+}
 
 }
 
@@ -307,7 +345,7 @@ Future<void> exportPDF() async {
             _buildReportCard(
               Icons.eco,
               Colors.green,
-              'Total CO₂ Emissions',
+              'Total CO2 Emissions',
               '${totalEmissions.toStringAsFixed(1)} kg',
             ),
 
@@ -334,7 +372,7 @@ Future<void> exportPDF() async {
             _buildReportCard(
               Icons.trending_up,
               Colors.red,
-              'Forecast CO₂ Emissions',
+              'Forecast CO2 Emissions',
               '${forecastEmission.toStringAsFixed(1)} kg',
             ),
 
@@ -362,7 +400,7 @@ Future<void> exportPDF() async {
             Card(
               elevation: 3,
 
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(16),
 
                 child: Text(
@@ -386,7 +424,7 @@ Future<void> exportPDF() async {
                 icon: const Icon(Icons.picture_as_pdf),
 
                 label: const Text(
-                  'Export Report (PDF)',
+                  'Download Report (PDF)',
                 ),
 
                 style: ElevatedButton.styleFrom(

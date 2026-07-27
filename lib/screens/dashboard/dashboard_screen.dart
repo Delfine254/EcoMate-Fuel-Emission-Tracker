@@ -18,6 +18,10 @@ class _DashboardScreenState
   double totalEmissions = 0;
   int vehicleCount = 0;
 
+  String currentVehicle = "No Vehicle";
+String userName = "User";
+String lastFuelEntry = "--";
+
   @override
   void initState() {
     super.initState();
@@ -26,17 +30,39 @@ class _DashboardScreenState
 
   Future<void> loadDashboardData() async {
 
-    totalFuel =
-        await DatabaseHelper.getTotalFuelUsed();
+  totalFuel =
+      await DatabaseHelper.getTotalFuelUsed();
 
-    totalEmissions =
-        await DatabaseHelper.getTotalEmissions();
+  totalEmissions =
+      await DatabaseHelper.getTotalEmissions();
 
-    vehicleCount =
-        await DatabaseHelper.getVehicleCount();
+  vehicleCount =
+      await DatabaseHelper.getVehicleCount();
 
-    setState(() {});
+  currentVehicle =
+      DatabaseHelper.selectedVehicle ?? "No Vehicle";
+
+  final user =
+      await DatabaseHelper.getLoggedInUser();
+
+  if (user != null) {
+    userName = user.fullName.split(" ").first;
   }
+
+  setState(() {});
+}
+    String getGreeting() {
+  final hour = DateTime.now().hour;
+
+  if (hour < 12) {
+    return "Good Morning";
+  } else if (hour < 17) {
+    return "Good Afternoon";
+  } else {
+    return "Good Evening";
+  }
+}
+  
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +70,19 @@ class _DashboardScreenState
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text('EcoMate Dashboard'),
-        backgroundColor: Colors.blue,
-      ),
+  elevation: 0,
+  backgroundColor: Colors.white,
+  foregroundColor: Colors.black,
+  title: const Text(
+    "EcoMate",
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 28,
+      color: Colors.green,
+      letterSpacing: 0.3,
+    ),
+  ),
+),
 
       drawer: const CustomDrawer(),
 
@@ -55,37 +91,57 @@ class _DashboardScreenState
         padding: const EdgeInsets.all(16),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
 
-          children: [
+    Text(
+      "${getGreeting()}, $userName 👋",
+      style: const TextStyle(
+  fontSize: 26,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF374151), // Dark Grey
+),
+    ),
 
-            const Text(
-              'Welcome Back 👋',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+    const SizedBox(height: 30),
 
-            const SizedBox(height: 10),
+    const Text(
+      "Current Vehicle",
+      style: TextStyle(
+        fontSize: 16,
+        color: Colors.grey,
+      ),
+    ),
 
-            Text(
-              'Here is your fuel and emissions summary.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-              ),
-            ),
+    const SizedBox(height: 8),
 
-            const SizedBox(height: 30),
+    Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        leading: const Icon(
+          Icons.directions_car,
+          color: Colors.blue,
+        ),
+        title: Text(
+          currentVehicle,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ),
+
+    const SizedBox(height: 25),
 
             Row(
               children: [
 
                 Expanded(
                   child: _buildSummaryCard(
-                    color: Colors.blue,
+                    color: Colors.green,
                     icon: Icons.local_gas_station,
                     value:
                         '${totalFuel.toStringAsFixed(1)} L',
@@ -115,10 +171,10 @@ class _DashboardScreenState
 
                 Expanded(
                   child: _buildSummaryCard(
-                    color: Colors.orange,
+                    color: Colors.green,
                     icon: Icons.directions_car,
                     value: '$vehicleCount',
-                    title: 'Vehicles',
+                    title: 'Registered Vehicles',
                   ),
                 ),
 
@@ -126,9 +182,9 @@ class _DashboardScreenState
 
                 Expanded(
                   child: _buildSummaryCard(
-                    color: Colors.purple,
+                    color: Colors.green,
                     icon: Icons.analytics,
-                    value: 'Live',
+                    value: 'Synced',
                     title: 'Data Status',
                   ),
                 ),
@@ -138,31 +194,40 @@ class _DashboardScreenState
 
             const SizedBox(height: 30),
 
-            const Text(
-              'Quick Summary',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+  const Text(
+  "Today's Overview",
+  style: TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF374151),
+  ),
+),
 
-            const SizedBox(height: 15),
+const SizedBox(height: 15),
 
-            Card(
-              elevation: 3,
+Card(
+  elevation: 3,
+  child: Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
 
-              child: Padding(
-                padding: const EdgeInsets.all(16),
+        Text(
+          'Current Vehicle: $currentVehicle',
+          style: const TextStyle(fontSize: 16),
+        ),
 
-                child: Text(
-                  'You have registered $vehicleCount vehicle(s), recorded ${totalFuel.toStringAsFixed(1)} litres of fuel and generated approximately ${totalEmissions.toStringAsFixed(1)} kg of CO₂ emissions. Continue logging fuel usage regularly for more accurate reports and predictions.',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ),
+        const SizedBox(height: 8),
+
+        const Text(
+          'System Status: Synced',
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
+    ),
+  ),
+),
           ],
         ),
       ),

@@ -124,6 +124,20 @@ static Future<User?> loginUser(
   return null;
 }
 
+static Future<User?> getLoggedInUser() async {
+  final db = await database;
+
+  final result = await db.query(
+    'users',
+    where: 'email = ?',
+    whereArgs: [currentUserEmail],
+  );
+
+  if (result.isEmpty) return null;
+
+  return User.fromMap(result.first);
+}
+
 static Future<bool> emailExists(String email) async {
   final db = await database;
 
