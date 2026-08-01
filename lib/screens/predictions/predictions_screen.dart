@@ -80,23 +80,30 @@ class _PredictionsScreenState
 
       drawer: const CustomDrawer(),
 
-      body: SingleChildScrollView(
-
-        padding: const EdgeInsets.all(16),
-
+body: Padding(
+  padding: const EdgeInsets.only(
+    left: 40,
+    right: 20,
+    top: 24,
+  ),
+  child: SingleChildScrollView(
+    child: SizedBox(
+      width: 650,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
-
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
 
-            const Text(
-              'Fuel Consumption Predictions',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+           const Text(
+  'Fuel Consumption Predictions',
+  style: TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF374151),
+  ),
+),
 
             const SizedBox(height: 20),
 
@@ -156,7 +163,11 @@ class _PredictionsScreenState
             const SizedBox(height: 15),
 
             Card(
-              child: ListTile(
+              child: Padding(
+  padding: const EdgeInsets.symmetric(
+    vertical: 6,
+  ),
+  child: ListTile(
                 leading: const Icon(
                   Icons.insights,
                   color: Colors.blue,
@@ -166,7 +177,7 @@ class _PredictionsScreenState
                 ),
               ),
             ),
-
+            ),
             Card(
               child: ListTile(
                 leading: const Icon(
@@ -193,10 +204,13 @@ class _PredictionsScreenState
               ),
             ),
 
-          ],
+           ],
+          ),
+         ),
         ),
       ),
-    );
+     ),
+  );
   }
 
   Widget _buildPredictionCard(

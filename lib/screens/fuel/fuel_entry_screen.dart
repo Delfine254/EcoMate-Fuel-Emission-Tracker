@@ -38,7 +38,11 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
   setState(() {
     vehicles = data;
 
-    if (vehicles.isEmpty) return;
+    if (vehicles.isEmpty) {
+  selectedVehicle = null;
+  DatabaseHelper.selectedVehicle = null;
+  return;
+}
 
     if (savedVehicle != null &&
         vehicles.any((v) => v.name == savedVehicle)) {
@@ -69,11 +73,16 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
         backgroundColor: Colors.blue,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-
-        child: SingleChildScrollView(
-          child: Column(
+      body: SingleChildScrollView(
+  child: Padding(
+    padding: const EdgeInsets.only(
+      left: 20,
+      right: 20,
+      top: 30,
+    ),
+    child: SizedBox(
+      width: 900,
+      child: Column(
             children: [
 
               if (vehicles.isEmpty)
@@ -275,6 +284,7 @@ class _FuelEntryScreenState extends State<FuelEntryScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

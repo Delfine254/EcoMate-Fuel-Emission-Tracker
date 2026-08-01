@@ -94,10 +94,16 @@ class _VehicleScreenState extends State<VehicleScreen> {
 
       drawer: const CustomDrawer(),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-
-        child: Column(
+      body: SingleChildScrollView(
+  child: Padding(
+    padding: const EdgeInsets.only(
+      left: 20,
+      right: 20,
+      top: 30,
+    ),
+    child: SizedBox(
+      width: 900,
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
@@ -142,8 +148,8 @@ class _VehicleScreenState extends State<VehicleScreen> {
 
             const SizedBox(height: 20),
 
-            Expanded(
-              child: vehicles.isEmpty
+          
+              vehicles.isEmpty
 
                   ? const Center(
                       child: Text(
@@ -151,47 +157,38 @@ class _VehicleScreenState extends State<VehicleScreen> {
                       ),
                     )
 
-                  : ListView.builder(
+                  : Column(
+    children: vehicles.map((vehicle) {
+      return Card(
+        child: ListTile(
+          leading: const Icon(
+            Icons.directions_car,
+            color: Colors.blue,
+          ),
 
-                      itemCount: vehicles.length,
+          title: Text(vehicle.name),
 
-                      itemBuilder: (context, index) {
+          subtitle: Text(
+            '${vehicle.fuelType} • ${vehicle.efficiency} km/L',
+          ),
 
-                        final vehicle = vehicles[index];
-
-                        return Card(
-
-                          child: ListTile(
-
-                            leading: const Icon(
-                              Icons.directions_car,
-                              color: Colors.blue,
-                            ),
-
-                            title: Text(vehicle.name),
-
-                            subtitle: Text(
-                              '${vehicle.fuelType} • ${vehicle.efficiency} km/L',
-                            ),
-
-                            trailing: IconButton(
-
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-
-                              onPressed: () {
-                                deleteVehicle(vehicle);
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+          trailing: IconButton(
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
             ),
+            onPressed: () {
+              deleteVehicle(vehicle);
+            },
+          ),
+        ),
+      );
+    }).toList(),
+  ),
           ],
         ),
+    ),
+  ),
       ),
     );
   }

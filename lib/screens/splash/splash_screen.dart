@@ -10,77 +10,74 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       backgroundColor: Colors.white,
 
-      body: Stack(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+             padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
 
-        children: [
+                  Image.asset(
+                    'assets/images/splash.png',
+                    width: 340,
+                  ),
 
-          Center(
-            child: Image.asset(
-              'assets/images/splash.png',
-              width: 330,
+                  const SizedBox(height: 5),
+
+                  const Text(
+                    'Track Fuel. Reduce Emissions.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.green,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  SizedBox(
+                    width: 320,
+                    height: 58,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                ],
+              ),
             ),
           ),
-
-Positioned(
-    bottom: 120,
-    left: 0,
-    right: 0,
-    child: Center(
-      child: Text(
-        'Track Fuel. Reduce Emissions.',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Colors.green,
-          letterSpacing: 0.5,
         ),
-      ),
-    ),
-  ),
-  
-          Positioned(
-  bottom: 50,
-  left: 40,
-  right: 40,
-  child: SizedBox(
-    height: 50,
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const LoginScreen(),
-          ),
-        );
-      },
-      child: const Text(
-        'Continue',
-        style: TextStyle(
-          fontSize: 18,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ),
-),
-
-        ],
       ),
     );
   }

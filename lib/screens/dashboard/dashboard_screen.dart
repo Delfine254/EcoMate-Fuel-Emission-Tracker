@@ -37,10 +37,16 @@ String lastFuelEntry = "--";
       await DatabaseHelper.getTotalEmissions();
 
   vehicleCount =
-      await DatabaseHelper.getVehicleCount();
+    await DatabaseHelper.getVehicleCount();
 
-  currentVehicle =
-      DatabaseHelper.selectedVehicle ?? "No Vehicle";
+final vehicles =
+    await DatabaseHelper.getVehicles();
+
+if (vehicles.isNotEmpty) {
+  currentVehicle = vehicles.first.name;
+} else {
+  currentVehicle = "No Vehicle";
+}
 
   final user =
       await DatabaseHelper.getLoggedInUser();
@@ -191,43 +197,6 @@ String lastFuelEntry = "--";
 
               ],
             ),
-
-            const SizedBox(height: 30),
-
-  const Text(
-  "Today's Overview",
-  style: TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.bold,
-    color: Color(0xFF374151),
-  ),
-),
-
-const SizedBox(height: 15),
-
-Card(
-  elevation: 3,
-  child: Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-
-        Text(
-          'Current Vehicle: $currentVehicle',
-          style: const TextStyle(fontSize: 16),
-        ),
-
-        const SizedBox(height: 8),
-
-        const Text(
-          'System Status: Synced',
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
-    ),
-  ),
-),
           ],
         ),
       ),

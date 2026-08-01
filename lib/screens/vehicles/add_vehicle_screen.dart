@@ -30,11 +30,16 @@ class _AddVehicleScreenState
         backgroundColor: Colors.blue,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-
-        child: SingleChildScrollView(
-          child: Column(
+      body: SingleChildScrollView(
+  child: Padding(
+    padding: const EdgeInsets.only(
+      left: 20,
+      right: 20,
+      top: 30,
+    ),
+    child: SizedBox(
+      width: 900,
+      child: Column(
             children: [
 
               TextField(
@@ -201,6 +206,7 @@ class _AddVehicleScreenState
             ],
           ),
         ),
+  ),
       ),
     );
   }

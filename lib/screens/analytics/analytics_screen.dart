@@ -62,17 +62,24 @@ estimatedCost = totalFuel * 180;
 
     return Scaffold(
 
-      appBar: AppBar(
-        title: const Text('Analytics'),
-        backgroundColor: Colors.blue,
-      ),
+  appBar: AppBar(
+    title : const Text('Analytics'),
+  backgroundColor: Colors.blue,
+  ),
 
       drawer: const CustomDrawer(),
 
-      body: SingleChildScrollView(
-
-        padding: const EdgeInsets.all(16),
-
+      body: Padding(
+  padding: const EdgeInsets.only(
+    left: 40,
+    right: 20,
+    top: 24,
+  ),
+  child: SingleChildScrollView(
+    child: SizedBox(
+      width: 650,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
 
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,12 +87,13 @@ estimatedCost = totalFuel * 180;
           children: [
 
             const Text(
-              'Fuel Consumption Analytics',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+  'Fuel Consumption Analytics',
+  style: TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF374151),
+  ),
+),
 
             const SizedBox(height: 20),
 
@@ -150,7 +158,7 @@ estimatedCost = totalFuel * 180;
               '${lowestRefill.toStringAsFixed(1)} Litres',
             ),
 
-            const SizedBox(height: 30),
+                       const SizedBox(height: 30),
 
             const Text(
               'Recent Insights',
@@ -163,15 +171,20 @@ estimatedCost = totalFuel * 180;
             const SizedBox(height: 15),
 
             Card(
-              child: ListTile(
-                leading: const Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
                 ),
-                title: Text(
-                  fuelEntries > 5
-                      ? 'Great! You are consistently tracking your fuel usage.'
-                      : 'Keep adding fuel logs for better analytics.',
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                  ),
+                  title: Text(
+                    fuelEntries > 5
+                        ? 'Great! You are consistently tracking your fuel usage.'
+                        : 'Keep adding fuel logs for better analytics.',
+                  ),
                 ),
               ),
             ),
@@ -207,6 +220,9 @@ estimatedCost = totalFuel * 180;
           ],
         ),
       ),
+    ),
+  ),
+),
     );
   }
 
@@ -216,13 +232,9 @@ estimatedCost = totalFuel * 180;
     String title,
     String value,
   ) {
-
     return Card(
-
       elevation: 3,
-
       child: ListTile(
-
         leading: CircleAvatar(
           backgroundColor: color,
           child: Icon(
@@ -230,9 +242,7 @@ estimatedCost = totalFuel * 180;
             color: Colors.white,
           ),
         ),
-
         title: Text(title),
-
         subtitle: Text(
           value,
           style: const TextStyle(

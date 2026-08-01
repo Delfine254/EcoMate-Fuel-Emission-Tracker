@@ -105,10 +105,10 @@ static Future<int> insertUser(User user) async {
   );
 }
 
-static Future<User?> loginUser(
-  String email,
-  String password,
-) async {
+static Future<User?> loginUser({
+  required String email,
+  required String password,
+}) async {
   final db = await database;
 
   final result = await db.query(
@@ -477,13 +477,16 @@ static Future<double> getLowestFuelRefill() async {
 // ==========================
 
 static Future<double> getPredictedMonthlyFuelUsage() async {
-  final totalFuel = await getTotalFuelUsed();
-  final entries = await getFuelEntryCount();
+  final totalFuel =
+      await getSelectedVehicleFuelUsed();
+
+  final entries =
+      await getSelectedVehicleEntries();
 
   if (entries == 0) return 0;
 
-  // Average litres per refill × expected 8 refills/month
-  final averagePerRefill = totalFuel / entries;
+  final averagePerRefill =
+      totalFuel / entries;
 
   return averagePerRefill * 8;
 }
@@ -494,7 +497,6 @@ static Future<double> getPredictedMonthlyEmissions() async {
 
   return predictedFuel * 2.31;
 }
-
 // ==========================
 // RECOMMENDATIONS
 // ==========================
@@ -560,7 +562,7 @@ static Future<String> getEnvironmentalAdvice() async {
   final prefs = await SharedPreferences.getInstance();
 
   await prefs.setString(
-    'selectedVehicle',
+    'selectedVehicle_$currentUserEmail',
     vehicleName,
   );
 
@@ -570,8 +572,9 @@ static Future<String> getEnvironmentalAdvice() async {
 static Future<String?> loadSelectedVehicle() async {
   final prefs = await SharedPreferences.getInstance();
 
-  selectedVehicle =
-      prefs.getString('selectedVehicle');
+  selectedVehicle = prefs.getString(
+    'selectedVehicle_$currentUserEmail',
+  );
 
   return selectedVehicle;
 }

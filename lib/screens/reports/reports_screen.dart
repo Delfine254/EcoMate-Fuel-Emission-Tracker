@@ -245,9 +245,19 @@ if (outputFile != null) {
 
       drawer: const CustomDrawer(),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: Padding(
+  padding: const EdgeInsets.only(
+    left: 20,
+    right: 20,
+    top: 24,
+  ),
 
+  child: SizedBox(
+    width: 800,
+
+    child: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -255,10 +265,11 @@ if (outputFile != null) {
 
             Text(
               reportTitle,
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(
+  fontSize: 28,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF374151),
+),
             ),
 
             const SizedBox(height: 20),
@@ -439,6 +450,10 @@ if (outputFile != null) {
           ],
         ),
       ),
+    ),
+  ),
+      ),
+  
     );
   }
 
@@ -451,7 +466,11 @@ if (outputFile != null) {
     return Card(
       elevation: 3,
 
-      child: ListTile(
+      child: Padding(
+  padding: const EdgeInsets.symmetric(
+    vertical: 6,
+  ),
+  child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color,
 
@@ -470,6 +489,7 @@ if (outputFile != null) {
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
       ),
     );
   }

@@ -60,9 +60,16 @@ class _EmissionsScreenState extends State<EmissionsScreen> {
       drawer: const CustomDrawer(),
 
       body: Padding(
-        padding: const EdgeInsets.all(16),
+  padding: const EdgeInsets.only(
+    left: 40,
+    right: 20,
+    top: 24,
+  ),
 
-        child: Column(
+  child: SizedBox(
+    width: 650,
+
+    child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
@@ -141,6 +148,7 @@ class _EmissionsScreenState extends State<EmissionsScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
